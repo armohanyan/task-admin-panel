@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Article;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -23,7 +24,54 @@ class ArticleController extends Controller
      */
     public function create(Request $request )
     {
-        dd($request->all());
+        $validation = array(
+            'title' => 'required|max:50',
+            'description' => 'required|max:50',
+            'text' => 'required',
+            'images*' => 'mimes:jpeg,jpg,png,gif|max:10000'
+        );
+
+        $validator = Validator::make($request->all(), $validation);
+
+        if ( $validator->fails() ){
+
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray(),
+            ], 200);
+
+        }
+        else{
+//
+//            if( $request->hasFile('image') ){
+//
+//                $requestImage = $request->file("image-$albumId") ;
+//                $filename = time() . '.' . $requestImage->getClientOriginalExtension();
+//
+//                $image = new Album ;
+//                $image->body = $filename;
+//                $image->user()->associate( Auth::user() );
+//                $album->images()->save($image) ;
+//
+//                Image::make($requestImage)->resize(400, 400)
+//                    ->save( public_path( $album
+//                            ->getImagePath(Auth::user()->id,  $album->id ) . $filename ));
+//
+//                return redirect()->back()->with('info', 'Image uploaded successfully');
+//
+//            }
+
+//            $newArticle = Article::create([
+//                'title' => $request->input('firstname'),
+//                'description' => $request->input('surname'),
+//                'text' => $request->input('email'),
+//                'image' => bcrypt($request->input('password'))
+//            ]);
+
+
+            return response()->json(['success' => true], 200);
+        }
+
     }
 
     /**

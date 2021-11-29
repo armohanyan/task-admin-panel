@@ -20,4 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('articles', [ArticleController::class, 'index'] )->name('article.index');
-Route::get('post/create/article', [ArticleController::class, 'index'] )->name('article.index');
+Route::post('create/article', [ArticleController::class, 'create'] )->name('article.create');

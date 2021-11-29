@@ -48,7 +48,6 @@ export default({
         async getArticles(){
             await this.axios.get('/api/articles')
             .then( response => {
-                console.log(response)
             })
         },
     }
@@ -315,7 +314,7 @@ main{
     }
 }
 /* forms */
-form{
+#form-inner{
   input, textarea, select{
     @include clearfix;
     width:100%;
@@ -331,10 +330,10 @@ form{
     display:block;
     margin:1em 0 .5em;
   }
-  input[type=submit]{
+  .submit-form{
     @include button($accent-positive);
   }
-  input[type=submit]:hover{
+  .submit-form:hover{
     @include button($accent-information);
   }
 }
