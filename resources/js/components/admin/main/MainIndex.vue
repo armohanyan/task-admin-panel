@@ -1,0 +1,37 @@
+<template>
+    <main role="main">
+        <section class="panel important">
+            <h2>Welcome to Admin Dashboard </h2>
+            <ul>
+                <li>Important panel that will always be really wide Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+            </ul>
+        </section>
+        <section class="panel">
+            <h2>Articles</h2>
+            <ul>
+                <li><b>2458 </b>Published Posts</li>
+            </ul>
+        </section>
+<!--  Create - Article  -->
+    <create-article/>
+<!----------------------->
+<!--  Article - Table  -->
+    <article-table/>
+<!----------------------->
+
+    </main>
+</template>
+
+<script>
+import CreateArticle from "./CreateArticle";
+import ArticleTable from "./ArticleTable";
+
+export default {
+    name: "MainIndex",
+    components: {ArticleTable, CreateArticle}
+}
+</script>
+
+<style scoped>
+
+</style>
