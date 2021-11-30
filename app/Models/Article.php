@@ -25,13 +25,11 @@ class Article extends Model
        return $this->hasMany(Images::class);
     }
 
-    public function storeArticleImage($images){
+    public function storeArticleImage($files){
 
-        foreach ($images as $image){
-            $filename = time() . '.' . $image->getClientOriginalExtension();
-            $path = "public/article{$this->id}/";
-            $image->storeAs($path, $filename);
+        foreach ($files as $file){
+            $name = $file->getClientOriginalName();
+            $file->storeAs("artilce{$this->id}", $name, 'public');
         }
-
     }
 }

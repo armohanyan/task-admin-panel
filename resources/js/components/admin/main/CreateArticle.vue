@@ -1,16 +1,20 @@
 <template>
     <section class="panel important">
         <div class="form-container">
-            <h2>Write a post</h2>
+            <h2>Create a article</h2>
+            <div class="createdSuccessfully-inner">
+                <span class="createdSuccessfully" v-if="createdSuccessfully">You created article successfully</span>
+            </div>
             <form  @submit.prevent="onSubmit" enctype="multipart/form-data" id="form-inner">
                 <label for="title">Article Title:</label>
                 <input v-model="inputValues.title" type="text" name="title" id="title"
                         :class="inputErrors.titleError ? 'invalid-feedback' : ''"
                         :placeholder="inputErrors.titleError ? inputErrors.title : 'Type article title'" />
+
                 <label for="description">Article Description:</label>
                 <input v-model="inputValues.description" type="text" name="description" id="description"
                        :class="inputErrors.descriptionError ? 'invalid-feedback' : ''"
-                       :placeholder="inputErrors.descriptionError ? inputErrors.description : 'Type article description'" />
+                            :placeholder="inputErrors.descriptionError ? inputErrors.description : 'Type article description'" />
 
                 <label for='text'>Article Text:</label>
                 <textarea v-model="inputValues.text" cols="40" rows="8" name="text" placeholder="Type text" id="text"
@@ -43,6 +47,7 @@ export default {
         return {
             showArticleImages : [],
             inputErrors : {},
+            createdSuccessfully : false,
             imagesObject : null,
             array : [],
             FILE : [],
@@ -68,8 +73,7 @@ export default {
             this.FILE.splice(index,1)
         },
 
-        onSubmit(e) {
-            console.log(this.inputValues)
+        onSubmit() {
             let data = new FormData();
             let formValue = this.inputValues;
 
@@ -88,13 +92,26 @@ export default {
             }
             this.axios.post('api/create/article', data, config)
             .then(response => {
-                console.log(response)
                 if ( ! response.data.success ) {
                     this.inputErrors = []
+
                     $.each(response.data.errors, (key, value) =>  {
                         this.inputErrors[key] = value.join()
                         this.inputErrors[key + 'Error'] = true
                     });
+
+                }
+                else {
+                    this.createdSuccessfully = true;
+                    this.showArticleImages = [];
+                    this.inputErrors = {};
+                    this.imagesObject = null;
+                    this.FILE = [];
+                    this.inputValues = {
+                        title : '',
+                        description : '',
+                        text : '',
+                    };
                 }
             })
             .catch(err => console.log(err))
@@ -153,5 +170,15 @@ export default {
     font-size: 13px;
 }
 
+.createdSuccessfully-inner{
+    width: 100%;
+    text-align: center;
+}
+
+.createdSuccessfully{
+    color: green;
+    font-size:20px;
+    font-weight: 700;
+}
 </style>
 

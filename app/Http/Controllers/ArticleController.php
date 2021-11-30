@@ -17,7 +17,11 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        dd('success');
+        $articles = Article::orderBy('id', 'DESC')->limit(5)->get();
+        return response()->json([
+           'success' => true,
+           'articles' => $articles
+        ],200);
     }
 
     /**
@@ -59,7 +63,6 @@ class ArticleController extends Controller
             else{
                 $jsonDetails = NULL;
             }
-
             $newArticle = Article::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
@@ -69,9 +72,13 @@ class ArticleController extends Controller
 
             $newArticle->save();
 
-            $newArticle->storeArticleImage($request->file(['files']) );
+            if ( ! empty($request->file()) ){
+                $newArticle->storeArticleImage($request->file(['files']) );
+            }
 
-            return response()->json(['success' => true], 200);
+            return response()->json([
+                'success' => true,
+            ], 200);
         }
 
     }

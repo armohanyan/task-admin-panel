@@ -39,19 +39,6 @@ export default({
         }
     },
 
-    mounted() {
-        this.getArticles()
-    },
-
-    methods: {
-
-        async getArticles(){
-            await this.axios.get('/api/articles')
-            .then( response => {
-            })
-        },
-    }
-
 })
 
 </script>
