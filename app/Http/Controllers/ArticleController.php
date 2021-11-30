@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Article;
+use App\Models\Images;
+use Faker\ORM\Spot\ColumnTypeGuesser;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -22,13 +24,13 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request )
+    public function create(Request $request)
     {
+        dd( $request->file());
         $validation = array(
             'title' => 'required|max:50',
             'description' => 'required|max:50',
             'text' => 'required',
-            'images*' => 'mimes:jpeg,jpg,png,gif|max:10000'
         );
 
         $validator = Validator::make($request->all(), $validation);
@@ -42,33 +44,52 @@ class ArticleController extends Controller
 
         }
         else{
+
+            if ( ! empty($request->images)) {
+                $imagesArr = collect([]);
+
+                foreach ($request->images as $image){
+                    $requestImage = $request->file($image) ;
+                    $filename = time() . '.' . $requestImage->getClientOriginalExtension();
+                    $imagesArr->push($filename);
+                }
+
+                $jsonDetails = json_encode( $imagesArr, JSON_FORCE_OBJECT);
+                dd($imagesArr);
+            }
+            else{
+                $jsonDetails = NULL;
+            }
+
+            $newArticle = Article::create([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'text' => $request->input('text'),
+                'images' => $jsonDetails,
+            ]);
+            $newArticle->save();
 //
-//            if( $request->hasFile('image') ){
+//            Image::make($requestImage)->resize(400, 400)
+//                ->save();
+            $newArticle->storeArticleImage();
+
 //
-//                $requestImage = $request->file("image-$albumId") ;
-//                $filename = time() . '.' . $requestImage->getClientOriginalExtension();
+//            if( $request->has('images') ){
 //
-//                $image = new Album ;
-//                $image->body = $filename;
-//                $image->user()->associate( Auth::user() );
-//                $album->images()->save($image) ;
+//                $filename = time() . '.' . $request->images[0];
+//
+//                $newArticle->create([
+//                   'image' => $filename
+//                ]);
 //
 //                Image::make($requestImage)->resize(400, 400)
 //                    ->save( public_path( $album
 //                            ->getImagePath(Auth::user()->id,  $album->id ) . $filename ));
-//
-//                return redirect()->back()->with('info', 'Image uploaded successfully');
+
 //
 //            }
 
-//            $newArticle = Article::create([
-//                'title' => $request->input('firstname'),
-//                'description' => $request->input('surname'),
-//                'text' => $request->input('email'),
-//                'image' => bcrypt($request->input('password'))
-//            ]);
-
-
+//
             return response()->json(['success' => true], 200);
         }
 

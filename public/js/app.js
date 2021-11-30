@@ -2283,11 +2283,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       showArticleImages: [],
       inputErrors: {},
+      imagesObject: null,
+      array: [],
       inputValues: {
         title: null,
         description: null,
@@ -2300,17 +2311,27 @@ __webpack_require__.r(__webpack_exports__);
     previewFiles: function previewFiles(event) {
       var file = event.target.files[0];
       this.showArticleImages.push(URL.createObjectURL(file));
-      this.inputValues.images.push(event.target.files[0].name);
+      this.inputValues.images.push(file);
+      console.log(file); // console.log(JSON.stringify(file))
     },
     deleteImage: function deleteImage(index) {
       this.showArticleImages.splice(index, 1);
       this.inputValues.images.splice(index, 1);
     },
     submitCreateForm: function submitCreateForm() {
+      var _this = this;
+
+      console.log(this.inputValues);
       this.axios.post('api/create/article', this.inputValues).then(function (response) {
         if (!response.data.success) {
-          console.log(response.data.errors);
+          _this.inputErrors = [];
+          $.each(response.data.errors, function (key, value) {
+            _this.inputErrors[key] = value.join();
+            _this.inputErrors[key + 'Error'] = true;
+          });
         }
+      })["catch"](function (err) {
+        return console.log(err);
       });
     }
   }
@@ -6879,7 +6900,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-df8f9b22]{\n    display: flex;\n    flex-wrap:wrap;\n}\n.form-container[data-v-df8f9b22]{\n    width: 70%;\n    padding: 10px;\n}\n.images-container[data-v-df8f9b22]{\n    margin-top: 3px;\n    display: flex;\n    flex-wrap:wrap;\n    width: 100%;\n}\n.images-container > div[data-v-df8f9b22]{\n    width: 25%;\n    position: relative;\n}\n.images-container > div > img[data-v-df8f9b22]{\n    -o-object-fit: cover;\n       object-fit: cover;\n    width:100%;\n}\n.delete-image[data-v-df8f9b22]{\n    position: absolute;\n    top: 2px;\n    right: 5px;\n    font-size: 18px;\n    font-width: 700;\n    color: #fff;\n}\n.delete-image > img[data-v-df8f9b22] {\n    width: 30px;\n    height: 30px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-df8f9b22]{\n    display: flex;\n    flex-wrap:wrap;\n}\n.form-container[data-v-df8f9b22]{\n    width: 70%;\n    padding: 10px;\n}\n.images-container[data-v-df8f9b22]{\n    margin-top: 3px;\n    display: flex;\n    flex-wrap:wrap;\n    width: 100%;\n}\n.images-container > div[data-v-df8f9b22]{\n    width: 25%;\n    position: relative;\n}\n.images-container > div > img[data-v-df8f9b22]{\n    -o-object-fit: cover;\n       object-fit: cover;\n    width:100%;\n}\n.delete-image[data-v-df8f9b22]{\n    position: absolute;\n    top: 2px;\n    right: 5px;\n    font-size: 18px;\n    font-width: 700;\n    color: #fff;\n}\n.delete-image > img[data-v-df8f9b22] {\n    width: 30px;\n    height: 30px;\n}\n.invalid-feedback[data-v-df8f9b22]::-moz-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]:-ms-input-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::placeholder {\n    color: red;\n}\n.invalid-image[data-v-df8f9b22] {\n    color: red;\n    font-size: 13px;\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39764,11 +39785,14 @@ var render = function () {
               expression: "inputValues.title",
             },
           ],
+          class: _vm.inputErrors.titleError ? "invalid-feedback" : "",
           attrs: {
             type: "text",
             name: "title",
             id: "title",
-            placeholder: "Type article title",
+            placeholder: _vm.inputErrors.titleError
+              ? _vm.inputErrors.title
+              : "Type article title",
           },
           domProps: { value: _vm.inputValues.title },
           on: {
@@ -39794,11 +39818,14 @@ var render = function () {
               expression: "inputValues.description",
             },
           ],
+          class: _vm.inputErrors.descriptionError ? "invalid-feedback" : "",
           attrs: {
             type: "text",
             name: "description",
             id: "description",
-            placeholder: "Type article description",
+            placeholder: _vm.inputErrors.descriptionError
+              ? _vm.inputErrors.description
+              : "Type article description",
           },
           domProps: { value: _vm.inputValues.description },
           on: {
@@ -39822,12 +39849,16 @@ var render = function () {
               expression: "inputValues.text",
             },
           ],
+          class: _vm.inputErrors.textError ? "invalid-feedback" : "",
           attrs: {
             cols: "40",
             rows: "8",
             name: "text",
             placeholder: "Type text",
             id: "text",
+            placeholder: _vm.inputErrors.textError
+              ? _vm.inputErrors.text
+              : "Type article text",
           },
           domProps: { value: _vm.inputValues.text },
           on: {
@@ -39853,6 +39884,20 @@ var render = function () {
           },
           on: { change: _vm.previewFiles },
         }),
+        _vm._v(" "),
+        _c(
+          "span",
+          { class: _vm.inputErrors.imagesError ? "invalid-image" : "" },
+          [
+            _vm._v(
+              "\n                " +
+                _vm._s(
+                  _vm.inputErrors.imagesError ? _vm.inputErrors.images : ""
+                ) +
+                "\n            "
+            ),
+          ]
+        ),
         _vm._v(" "),
         _c(
           "div",

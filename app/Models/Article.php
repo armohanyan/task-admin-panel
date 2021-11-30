@@ -10,9 +10,10 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 
+        'title',
         'description',
-        'text', 
+        'text',
+        'images',
     ];
 
     protected static function newFactory()
@@ -22,5 +23,17 @@ class Article extends Model
 
     public function images(){
        return $this->hasMany(Images::class);
+    }
+
+    public function storeArticleImage($articleId, $images){
+        foreach ($images as $image){
+            $path = "article{$articleId}/{$image}" ;
+
+            $imageName = $image . '.' . time();
+        }
+
+        if( ! file_exists($path) ) mkdir($path, 0777, true) ;
+
+        return  "/$path/";
     }
 }
