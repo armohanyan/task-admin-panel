@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\Images;
+use Dflydev\DotAccessData\Data;
 use Faker\ORM\Spot\ColumnTypeGuesser;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -24,19 +25,20 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function create(Request $request)
     {
-        dd( $request->file());
         $validation = array(
             'title' => 'required|max:50',
             'description' => 'required|max:50',
             'text' => 'required',
         );
 
-        $validator = Validator::make($request->all(), $validation);
+        $validator = Validator::make($request->all(),  $validation);
 
         if ( $validator->fails() ){
-
             return response()->json([
                 'success' => false,
                 'errors' => $validator->getMessageBag()->toArray(),
@@ -45,17 +47,14 @@ class ArticleController extends Controller
         }
         else{
 
-            if ( ! empty($request->images)) {
+            if ( ! empty($request->file()) ) {
                 $imagesArr = collect([]);
 
-                foreach ($request->images as $image){
-                    $requestImage = $request->file($image) ;
-                    $filename = time() . '.' . $requestImage->getClientOriginalExtension();
+                foreach ($request->file(['files']) as $image){
+                    $filename = time() . '.' . $image->getClientOriginalExtension();
                     $imagesArr->push($filename);
                 }
-
                 $jsonDetails = json_encode( $imagesArr, JSON_FORCE_OBJECT);
-                dd($imagesArr);
             }
             else{
                 $jsonDetails = NULL;
@@ -67,29 +66,11 @@ class ArticleController extends Controller
                 'text' => $request->input('text'),
                 'images' => $jsonDetails,
             ]);
+
             $newArticle->save();
-//
-//            Image::make($requestImage)->resize(400, 400)
-//                ->save();
-            $newArticle->storeArticleImage();
 
-//
-//            if( $request->has('images') ){
-//
-//                $filename = time() . '.' . $request->images[0];
-//
-//                $newArticle->create([
-//                   'image' => $filename
-//                ]);
-//
-//                Image::make($requestImage)->resize(400, 400)
-//                    ->save( public_path( $album
-//                            ->getImagePath(Auth::user()->id,  $album->id ) . $filename ));
+            $newArticle->storeArticleImage($request->file(['files']) );
 
-//
-//            }
-
-//
             return response()->json(['success' => true], 200);
         }
 

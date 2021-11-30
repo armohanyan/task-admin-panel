@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Image ;
 class Article extends Model
 {
     use HasFactory;
@@ -25,15 +25,13 @@ class Article extends Model
        return $this->hasMany(Images::class);
     }
 
-    public function storeArticleImage($articleId, $images){
-        foreach ($images as $image){
-            $path = "article{$articleId}/{$image}" ;
+    public function storeArticleImage($images){
 
-            $imageName = $image . '.' . time();
+        foreach ($images as $image){
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $path = "public/article{$this->id}/";
+            $image->storeAs($path, $filename);
         }
 
-        if( ! file_exists($path) ) mkdir($path, 0777, true) ;
-
-        return  "/$path/";
     }
 }

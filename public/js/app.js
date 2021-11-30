@@ -2291,7 +2291,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2299,35 +2298,54 @@ __webpack_require__.r(__webpack_exports__);
       inputErrors: {},
       imagesObject: null,
       array: [],
+      FILE: [],
       inputValues: {
-        title: null,
-        description: null,
-        text: null,
-        images: []
+        title: '',
+        description: '',
+        text: ''
       }
     };
   },
   methods: {
     previewFiles: function previewFiles(event) {
-      var file = event.target.files[0];
-      this.showArticleImages.push(URL.createObjectURL(file));
-      this.inputValues.images.push(file);
-      console.log(file); // console.log(JSON.stringify(file))
+      var _this = this;
+
+      var files = event.target.files;
+      $.each(files, function (index, file) {
+        _this.FILE.push(file);
+
+        _this.showArticleImages.push(URL.createObjectURL(file));
+      });
     },
     deleteImage: function deleteImage(index) {
       this.showArticleImages.splice(index, 1);
-      this.inputValues.images.splice(index, 1);
+      this.FILE.splice(index, 1);
     },
-    submitCreateForm: function submitCreateForm() {
-      var _this = this;
+    onSubmit: function onSubmit(e) {
+      var _this2 = this;
 
       console.log(this.inputValues);
-      this.axios.post('api/create/article', this.inputValues).then(function (response) {
+      var data = new FormData();
+      var formValue = this.inputValues;
+      this.FILE.forEach(function (file, index) {
+        data.append('files[' + index + ']', file);
+      });
+      $.each(this.inputValues, function (key, value) {
+        data.append(key, value);
+      });
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      };
+      this.axios.post('api/create/article', data, config).then(function (response) {
+        console.log(response);
+
         if (!response.data.success) {
-          _this.inputErrors = [];
+          _this2.inputErrors = [];
           $.each(response.data.errors, function (key, value) {
-            _this.inputErrors[key] = value.join();
-            _this.inputErrors[key + 'Error'] = true;
+            _this2.inputErrors[key] = value.join();
+            _this2.inputErrors[key + 'Error'] = true;
           });
         }
       })["catch"](function (err) {
@@ -39773,174 +39791,189 @@ var render = function () {
     _c("div", { staticClass: "form-container" }, [
       _c("h2", [_vm._v("Write a post")]),
       _vm._v(" "),
-      _c("div", { attrs: { id: "form-inner" } }, [
-        _c("label", { attrs: { for: "title" } }, [_vm._v("Article Title:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.inputValues.title,
-              expression: "inputValues.title",
-            },
-          ],
-          class: _vm.inputErrors.titleError ? "invalid-feedback" : "",
-          attrs: {
-            type: "text",
-            name: "title",
-            id: "title",
-            placeholder: _vm.inputErrors.titleError
-              ? _vm.inputErrors.title
-              : "Type article title",
-          },
-          domProps: { value: _vm.inputValues.title },
+      _c(
+        "form",
+        {
+          attrs: { enctype: "multipart/form-data", id: "form-inner" },
           on: {
-            input: function ($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.inputValues, "title", $event.target.value)
+            submit: function ($event) {
+              $event.preventDefault()
+              return _vm.onSubmit.apply(null, arguments)
             },
           },
-        }),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "description" } }, [
-          _vm._v("Article Description:"),
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.inputValues.description,
-              expression: "inputValues.description",
+        },
+        [
+          _c("label", { attrs: { for: "title" } }, [_vm._v("Article Title:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.inputValues.title,
+                expression: "inputValues.title",
+              },
+            ],
+            class: _vm.inputErrors.titleError ? "invalid-feedback" : "",
+            attrs: {
+              type: "text",
+              name: "title",
+              id: "title",
+              placeholder: _vm.inputErrors.titleError
+                ? _vm.inputErrors.title
+                : "Type article title",
             },
-          ],
-          class: _vm.inputErrors.descriptionError ? "invalid-feedback" : "",
-          attrs: {
-            type: "text",
-            name: "description",
-            id: "description",
-            placeholder: _vm.inputErrors.descriptionError
-              ? _vm.inputErrors.description
-              : "Type article description",
-          },
-          domProps: { value: _vm.inputValues.description },
-          on: {
-            input: function ($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.inputValues, "description", $event.target.value)
+            domProps: { value: _vm.inputValues.title },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.inputValues, "title", $event.target.value)
+              },
             },
-          },
-        }),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "text" } }, [_vm._v("Article Text:")]),
-        _vm._v(" "),
-        _c("textarea", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.inputValues.text,
-              expression: "inputValues.text",
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "description" } }, [
+            _vm._v("Article Description:"),
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.inputValues.description,
+                expression: "inputValues.description",
+              },
+            ],
+            class: _vm.inputErrors.descriptionError ? "invalid-feedback" : "",
+            attrs: {
+              type: "text",
+              name: "description",
+              id: "description",
+              placeholder: _vm.inputErrors.descriptionError
+                ? _vm.inputErrors.description
+                : "Type article description",
             },
-          ],
-          class: _vm.inputErrors.textError ? "invalid-feedback" : "",
-          attrs: {
-            cols: "40",
-            rows: "8",
-            name: "text",
-            placeholder: "Type text",
-            id: "text",
-            placeholder: _vm.inputErrors.textError
-              ? _vm.inputErrors.text
-              : "Type article text",
-          },
-          domProps: { value: _vm.inputValues.text },
-          on: {
-            input: function ($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.inputValues, "text", $event.target.value)
+            domProps: { value: _vm.inputValues.description },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.inputValues, "description", $event.target.value)
+              },
             },
-          },
-        }),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "images" } }, [_vm._v("Article Images")]),
-        _vm._v(" "),
-        _c("input", {
-          ref: "myFiles",
-          attrs: {
-            accept: "image/*",
-            type: "file",
-            name: "images[]",
-            id: "images",
-            multiple: "",
-          },
-          on: { change: _vm.previewFiles },
-        }),
-        _vm._v(" "),
-        _c(
-          "span",
-          { class: _vm.inputErrors.imagesError ? "invalid-image" : "" },
-          [
-            _vm._v(
-              "\n                " +
-                _vm._s(
-                  _vm.inputErrors.imagesError ? _vm.inputErrors.images : ""
-                ) +
-                "\n            "
-            ),
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "images-container" },
-          _vm._l(_vm.showArticleImages, function (image, index) {
-            return _c("div", { key: index, staticClass: "image-items" }, [
-              _c("img", { attrs: { src: image, alt: "" } }),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  staticClass: "delete-image",
-                  on: {
-                    click: function ($event) {
-                      return _vm.deleteImage(index)
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "text" } }, [_vm._v("Article Text:")]),
+          _vm._v(" "),
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.inputValues.text,
+                expression: "inputValues.text",
+              },
+            ],
+            class: _vm.inputErrors.textError ? "invalid-feedback" : "",
+            attrs: {
+              cols: "40",
+              rows: "8",
+              name: "text",
+              placeholder: "Type text",
+              id: "text",
+              placeholder: _vm.inputErrors.textError
+                ? _vm.inputErrors.text
+                : "Type article text",
+            },
+            domProps: { value: _vm.inputValues.text },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.inputValues, "text", $event.target.value)
+              },
+            },
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "images" } }, [_vm._v("Article Images")]),
+          _vm._v(" "),
+          _c("input", {
+            ref: "myFiles",
+            attrs: {
+              accept: "image/*",
+              type: "file",
+              name: "images[]",
+              id: "images",
+              multiple: "",
+            },
+            on: { change: _vm.previewFiles },
+          }),
+          _vm._v(" "),
+          _c(
+            "span",
+            { class: _vm.inputErrors.imagesError ? "invalid-image" : "" },
+            [
+              _vm._v(
+                "\n                " +
+                  _vm._s(
+                    _vm.inputErrors.imagesError ? _vm.inputErrors.images : ""
+                  ) +
+                  "\n            "
+              ),
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "images-container" },
+            _vm._l(_vm.showArticleImages, function (image, index) {
+              return _c("div", { key: index, staticClass: "image-items" }, [
+                _c("img", { attrs: { src: image, alt: "" } }),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "delete-image",
+                    on: {
+                      click: function ($event) {
+                        return _vm.deleteImage(index)
+                      },
                     },
                   },
-                },
-                [
-                  _c("img", {
-                    attrs: {
-                      src: "https://img.icons8.com/flat-round/64/000000/delete-sign.png",
-                    },
-                  }),
-                ]
-              ),
-            ])
-          }),
-          0
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "button" }, [
-          _c(
-            "button",
-            { staticClass: "submit-form", on: { click: _vm.submitCreateForm } },
-            [_vm._v("Submit")]
+                  [
+                    _c("img", {
+                      attrs: {
+                        src: "https://img.icons8.com/flat-round/64/000000/delete-sign.png",
+                      },
+                    }),
+                  ]
+                ),
+              ])
+            }),
+            0
           ),
-        ]),
-      ]),
+          _vm._v(" "),
+          _vm._m(0),
+        ]
+      ),
     ]),
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "button" }, [
+      _c("button", { staticClass: "submit-form" }, [_vm._v("Submit")]),
+    ])
+  },
+]
 render._withStripped = true
 
 
