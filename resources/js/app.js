@@ -7,10 +7,13 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
+import Vue from 'vue'
 
+window.EventBus = new Vue();
 import AdminIndex from './components/admin/IndexComponent/AdminIndex';
 
 new Vue({

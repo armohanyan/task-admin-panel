@@ -5,8 +5,11 @@ use App\Models\Article;
 use App\Models\Images;
 use Dflydev\DotAccessData\Data;
 use Faker\ORM\Spot\ColumnTypeGuesser;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use League\CommonMark\Parser\Block\SkipLinesStartingWithLettersParser;
 
 class ArticleController extends Controller
 {
@@ -19,9 +22,9 @@ class ArticleController extends Controller
     {
         $articles = Article::orderBy('id', 'DESC')->limit(5)->get();
         return response()->json([
-           'success' => true,
-           'articles' => $articles
-        ],200);
+            'success' => true,
+            'articles' => $articles
+        ], 200);
     }
 
     /**
@@ -29,7 +32,6 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
 
 
     public function create(Request $request)
@@ -40,40 +42,32 @@ class ArticleController extends Controller
             'text' => 'required',
         );
 
-        $validator = Validator::make($request->all(),  $validation);
+        $validator = Validator::make($request->all(), $validation);
 
-        if ( $validator->fails() ){
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->getMessageBag()->toArray(),
             ], 200);
 
-        }
-        else{
-
-            if ( ! empty($request->file()) ) {
-                $imagesArr = collect([]);
-
-                foreach ($request->file(['files']) as $image){
-                    $filename = time() . '.' . $image->getClientOriginalExtension();
-                    $imagesArr->push($filename);
-                }
-                $jsonDetails = json_encode( $imagesArr, JSON_FORCE_OBJECT);
-            }
-            else{
-                $jsonDetails = NULL;
-            }
+        } else {
             $newArticle = Article::create([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
                 'text' => $request->input('text'),
-                'images' => $jsonDetails,
             ]);
-
             $newArticle->save();
 
-            if ( ! empty($request->file()) ){
-                $newArticle->storeArticleImage($request->file(['files']) );
+            if (!empty($request->file())) {
+                $imagesArr = collect([]);
+
+                foreach ($request->file(['files']) as $index => $image) {
+                    $name = time() . $index . '.' . $image->getClientOriginalExtension();
+                    $filename = 'storage/article' . $newArticle->id . '/' . $name;
+                    $image->storeAs("article{$newArticle->id}", $name, 'public');
+                    $imagesArr->push($filename);
+                }
+                $newArticle->update(['images' => json_encode($imagesArr, JSON_FORCE_OBJECT)]);
             }
 
             return response()->json([
@@ -86,7 +80,7 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -97,7 +91,7 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -108,34 +102,90 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        //
+        $article = Article::find($id);
+        return response()->json([
+            'siccess' => true,
+            'article' => $article,
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Article $article)
     {
-        //
-    }
+        $validation = array(
+            'title' => 'required|max:50',
+            'description' => 'required|max:50',
+            'text' => 'required',
+        );
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $validator = Validator::make($request->all(), $validation);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray(),
+            ], 200);
+
+        } else {
+            $article->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'text' => $request->input('text'),
+            ]);
+
+            if ($request->deletedImages) {
+                $deletedImages = explode(',',  $request->deletedImages);
+                $articleImages = collect((array)json_decode($article->images));
+
+                $filtered = $articleImages->filter(function ($image) use($deletedImages) {
+                    if (!in_array($image, $deletedImages)) return true;
+                    if (File::exists($image)) File::delete($image);
+                    return false;
+                });
+                $article->update(['images' => json_encode((object)$filtered)]);
+            }
+
+//            if ( ! empty($request->file())) {
+//                $imagesArr = collect([]);
+//
+////                foreach ($request->file(['files']) as $index => $image){
+////                    $name = time(). $index . '.' . $image->getClientOriginalExtension();
+////                    $filename = 'storage/article' . $newArticle->id . '/' . $name ;
+////                    $image->storeAs("article{$newArticle->id}", $name, 'public');
+////                    $imagesArr->push($filename);
+////                }
+////                $newArticle->update(['images' => json_encode( $imagesArr, JSON_FORCE_OBJECT)]);
+//            }
+
+            return response()->json([
+                'success' => true,
+            ], 200);
+
+        }
     }
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param int $id
+         * @return \Illuminate\Http\Response
+         */
+        public
+        function destroy($id)
+        {
+            Article::destroy($id);
+            return response()->json([
+                'siccess' => true,
+            ], 200);
+        }
 }

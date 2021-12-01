@@ -23,9 +23,9 @@
 </template>
 
 <script>
+;
 import CreateArticle from "./CreateArticle";
 import ArticleTable from "./ArticleTable";
-
 export default {
     name: "MainIndex",
     components: {ArticleTable, CreateArticle}

@@ -24,12 +24,5 @@ class Article extends Model
     public function images(){
        return $this->hasMany(Images::class);
     }
-
-    public function storeArticleImage($files){
-
-        foreach ($files as $file){
-            $name = $file->getClientOriginalName();
-            $file->storeAs("artilce{$this->id}", $name, 'public');
-        }
-    }
 }
+

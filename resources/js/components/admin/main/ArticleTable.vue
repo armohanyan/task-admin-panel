@@ -29,10 +29,10 @@
                             <td>{{ article.title }}</td>
                             <td>{{ article.description }}</td>
                             <td>{{ article.text }}</td>
-                            <td>
-                                <a href="#" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
-                                <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                                <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                            <td class="action-links">
+<!--                                <a href="#" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>-->
+                                <a @click="editArticle(article.id)" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                <a @click="deleteArticle(article.id)" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                             </td>
                         </tr>
                     </tbody>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+
 export default {
     name: "ArticleITable",
 
@@ -72,11 +73,25 @@ export default {
             await this.axios.get('api/articles')
             .then(response => {
                 this.articles = response.data.articles
-                console.log(this.articles);
+                console.log(this.articles)
             })
             .catch(error => {
                 console.log(error);
             })
+        },
+
+       async deleteArticle(id){
+            await this.axios.get(`api/destroy/article/${id}`)
+            .then(response => {
+                this.getArticles();
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+
+        editArticle(id){
+            EventBus.$emit('editArticle', id);
         }
     }
 }
@@ -199,5 +214,9 @@ table.table td i {
     float: left;
     margin-top: 6px;
     font-size: 95%;
+}
+
+.action-links{
+    cursor: pointer;
 }
 </style>

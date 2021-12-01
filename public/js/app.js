@@ -2274,6 +2274,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee);
       }))();
+    },
+    deleteArticle: function deleteArticle(id) {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return _this2.axios.get("api/destroy/article/".concat(id)).then(function (response) {
+                  _this2.getArticles();
+                })["catch"](function (error) {
+                  console.log(error);
+                });
+
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    editArticle: function editArticle(id) {
+      EventBus.$emit('editArticle', id);
     }
   }
 });
@@ -2333,67 +2359,113 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       showArticleImages: [],
+      deletedImages: [],
       inputErrors: {},
       createdSuccessfully: false,
+      isFormForEdit: false,
       imagesObject: null,
-      array: [],
+      articleImage: [],
       FILE: [],
+      editArtilcle: [],
       inputValues: {
         title: '',
         description: '',
         text: ''
-      }
+      },
+      articleId: ''
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    EventBus.$on('editArticle', function (id) {
+      _this.articleId = id;
+      _this.isFormForEdit = true;
+
+      _this.axios.get("api/edit/article/".concat(id)).then(function (response) {
+        var articleImages = response.data.article.images;
+        $.each(response.data.article, function (key, value) {
+          _this.inputValues[key] !== undefined ? _this.inputValues[key] = value : false;
+        });
+
+        if (articleImages != null) {
+          var imageAsObject = JSON.parse(articleImages);
+          _this.showArticleImages = [];
+          $.each(imageAsObject, function (key, value) {
+            _this.showArticleImages.push(value);
+
+            _this.articleImage.push(value);
+          });
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    });
   },
   methods: {
     previewFiles: function previewFiles(event) {
-      var _this = this;
+      var _this2 = this;
 
       var files = event.target.files;
       $.each(files, function (index, file) {
-        _this.FILE.push(file);
+        _this2.FILE.push(file);
 
-        _this.showArticleImages.push(URL.createObjectURL(file));
+        _this2.showArticleImages.push(URL.createObjectURL(file));
       });
     },
     deleteImage: function deleteImage(index) {
-      this.showArticleImages.splice(index, 1);
+      var deletedImage = this.showArticleImages.splice(index, 1);
       this.FILE.splice(index, 1);
+
+      if (this.articleImage.includes(deletedImage.join())) {
+        this.deletedImages.push(deletedImage);
+      }
     },
     onSubmit: function onSubmit() {
-      var _this2 = this;
+      var _this3 = this;
 
       var data = new FormData();
       var formValue = this.inputValues;
+      var url;
       this.FILE.forEach(function (file, index) {
         data.append('files[' + index + ']', file);
       });
       $.each(this.inputValues, function (key, value) {
         data.append(key, value);
       });
+
+      if (this.isFormForEdit) {
+        url = "api/update/article/".concat(this.articleId);
+        console.log(this.deletedImages);
+        this.deletedImages.length > 0 ? data.append('deletedImages', this.deletedImages) : '';
+      } else {
+        url = 'api/create/article';
+      }
+
       var config = {
         headers: {
           'content-type': 'multipart/form-data'
         }
       };
-      this.axios.post('api/create/article', data, config).then(function (response) {
+      this.axios.post(url, data, config).then(function (response) {
         if (!response.data.success) {
-          _this2.inputErrors = [];
+          _this3.inputErrors = [];
           $.each(response.data.errors, function (key, value) {
-            _this2.inputErrors[key] = value.join();
-            _this2.inputErrors[key + 'Error'] = true;
+            _this3.inputErrors[key] = value.join();
+            _this3.inputErrors[key + 'Error'] = true;
           });
         } else {
-          _this2.createdSuccessfully = true;
-          _this2.showArticleImages = [];
-          _this2.inputErrors = {};
-          _this2.imagesObject = null;
-          _this2.FILE = [];
-          _this2.inputValues = {
+          _this3.createdSuccessfully = true;
+          _this3.showArticleImages = [];
+          _this3.inputErrors = {};
+          _this3.imagesObject = null;
+          _this3.FILE = [];
+          _this3.inputValues = {
             title: '',
             description: '',
             text: ''
@@ -2445,6 +2517,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+;
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2495,7 +2568,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-axios */ "./node_modules/vue-axios/dist/vue-axios.esm.min.js");
-/* harmony import */ var _components_admin_IndexComponent_AdminIndex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/admin/IndexComponent/AdminIndex */ "./resources/js/components/admin/IndexComponent/AdminIndex.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _components_admin_IndexComponent_AdminIndex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/admin/IndexComponent/AdminIndex */ "./resources/js/components/admin/IndexComponent/AdminIndex.vue");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -2506,11 +2580,13 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js")["default"]);
 
 
-Vue.use(vue_axios__WEBPACK_IMPORTED_MODULE_1__["default"], (axios__WEBPACK_IMPORTED_MODULE_0___default()));
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_axios__WEBPACK_IMPORTED_MODULE_1__["default"], (axios__WEBPACK_IMPORTED_MODULE_0___default()));
 
-new Vue({
+window.EventBus = new vue__WEBPACK_IMPORTED_MODULE_2__["default"]();
+
+new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
   render: function render(h) {
-    return h(_components_admin_IndexComponent_AdminIndex__WEBPACK_IMPORTED_MODULE_2__["default"]);
+    return h(_components_admin_IndexComponent_AdminIndex__WEBPACK_IMPORTED_MODULE_3__["default"]);
   }
 }).$mount("#admin-index");
 
@@ -6969,7 +7045,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-17ea8ef3] {\n    width: 95%;\n}\n.table-responsive[data-v-17ea8ef3] {\n    margin: 30px 0;\n}\n.table-wrapper[data-v-17ea8ef3] {\n    min-width: 1000px;\n    background: #fff;\n    padding: 20px;\n    box-shadow: 0 1px 1px rgba(0,0,0,.05);\n}\n.table-title[data-v-17ea8ef3] {\n    padding-bottom: 10px;\n    margin: 0 0 10px;\n}\n.table-title h2[data-v-17ea8ef3] {\n    margin: 8px 0 0;\n    font-size: 22px;\n}\n.search-box[data-v-17ea8ef3] {\n    position: relative;\n    float: right;\n}\n.search-box input[data-v-17ea8ef3] {\n    height: 34px;\n    border-radius: 20px;\n    padding-left: 35px;\n    border-color: #ddd;\n    box-shadow: none;\n}\n.search-box input[data-v-17ea8ef3]:focus {\n    border-color: #3FBAE4;\n}\n.search-box i[data-v-17ea8ef3] {\n    color: #a0a5b1;\n    position: absolute;\n    font-size: 19px;\n    top: 8px;\n    left: 10px;\n}\ntable.table tr th[data-v-17ea8ef3], table.table tr td[data-v-17ea8ef3] {\n    border-color: #e9e9e9;\n}\ntable.table-striped tbody tr[data-v-17ea8ef3]:nth-of-type(odd) {\n    background-color: #fcfcfc;\n}\ntable.table-striped.table-hover tbody tr[data-v-17ea8ef3]:hover {\n    background: #f5f5f5;\n}\ntable.table th i[data-v-17ea8ef3] {\n    font-size: 13px;\n    margin: 0 5px;\n    cursor: pointer;\n}\ntable.table td[data-v-17ea8ef3]:last-child {\n    width: 130px;\n}\ntable.table td a[data-v-17ea8ef3] {\n    color: #a0a5b1;\n    display: inline-block;\n    margin: 0 5px;\n}\ntable.table td a.view[data-v-17ea8ef3] {\n    color: #03A9F4;\n}\ntable.table td a.edit[data-v-17ea8ef3] {\n    color: #FFC107;\n}\ntable.table td a.delete[data-v-17ea8ef3] {\n    color: #E34724;\n}\ntable.table td i[data-v-17ea8ef3] {\n    font-size: 19px;\n}\n.pagination[data-v-17ea8ef3] {\n    float: right;\n    margin: 0 0 5px;\n}\n.pagination li a[data-v-17ea8ef3] {\n    border: none;\n    font-size: 95%;\n    width: 30px;\n    height: 30px;\n    color: #999;\n    margin: 0 2px;\n    line-height: 30px;\n    border-radius: 30px !important;\n    text-align: center;\n    padding: 0;\n}\n.pagination li a[data-v-17ea8ef3]:hover {\n    color: #666;\n}\n.pagination li.active a[data-v-17ea8ef3] {\n    background: #03A9F4;\n}\n.pagination li.active[data-v-17ea8ef3]{\n    color: #fff;\n}\n.pagination li.active a[data-v-17ea8ef3]:hover {\n    background: #0397d6;\n}\n.pagination li.disabled i[data-v-17ea8ef3] {\n    color: #ccc;\n}\n.pagination li i[data-v-17ea8ef3] {\n    font-size: 16px;\n    padding-top: 6px\n}\n.hint-text[data-v-17ea8ef3] {\n    float: left;\n    margin-top: 6px;\n    font-size: 95%;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-17ea8ef3] {\n    width: 95%;\n}\n.table-responsive[data-v-17ea8ef3] {\n    margin: 30px 0;\n}\n.table-wrapper[data-v-17ea8ef3] {\n    min-width: 1000px;\n    background: #fff;\n    padding: 20px;\n    box-shadow: 0 1px 1px rgba(0,0,0,.05);\n}\n.table-title[data-v-17ea8ef3] {\n    padding-bottom: 10px;\n    margin: 0 0 10px;\n}\n.table-title h2[data-v-17ea8ef3] {\n    margin: 8px 0 0;\n    font-size: 22px;\n}\n.search-box[data-v-17ea8ef3] {\n    position: relative;\n    float: right;\n}\n.search-box input[data-v-17ea8ef3] {\n    height: 34px;\n    border-radius: 20px;\n    padding-left: 35px;\n    border-color: #ddd;\n    box-shadow: none;\n}\n.search-box input[data-v-17ea8ef3]:focus {\n    border-color: #3FBAE4;\n}\n.search-box i[data-v-17ea8ef3] {\n    color: #a0a5b1;\n    position: absolute;\n    font-size: 19px;\n    top: 8px;\n    left: 10px;\n}\ntable.table tr th[data-v-17ea8ef3], table.table tr td[data-v-17ea8ef3] {\n    border-color: #e9e9e9;\n}\ntable.table-striped tbody tr[data-v-17ea8ef3]:nth-of-type(odd) {\n    background-color: #fcfcfc;\n}\ntable.table-striped.table-hover tbody tr[data-v-17ea8ef3]:hover {\n    background: #f5f5f5;\n}\ntable.table th i[data-v-17ea8ef3] {\n    font-size: 13px;\n    margin: 0 5px;\n    cursor: pointer;\n}\ntable.table td[data-v-17ea8ef3]:last-child {\n    width: 130px;\n}\ntable.table td a[data-v-17ea8ef3] {\n    color: #a0a5b1;\n    display: inline-block;\n    margin: 0 5px;\n}\ntable.table td a.view[data-v-17ea8ef3] {\n    color: #03A9F4;\n}\ntable.table td a.edit[data-v-17ea8ef3] {\n    color: #FFC107;\n}\ntable.table td a.delete[data-v-17ea8ef3] {\n    color: #E34724;\n}\ntable.table td i[data-v-17ea8ef3] {\n    font-size: 19px;\n}\n.pagination[data-v-17ea8ef3] {\n    float: right;\n    margin: 0 0 5px;\n}\n.pagination li a[data-v-17ea8ef3] {\n    border: none;\n    font-size: 95%;\n    width: 30px;\n    height: 30px;\n    color: #999;\n    margin: 0 2px;\n    line-height: 30px;\n    border-radius: 30px !important;\n    text-align: center;\n    padding: 0;\n}\n.pagination li a[data-v-17ea8ef3]:hover {\n    color: #666;\n}\n.pagination li.active a[data-v-17ea8ef3] {\n    background: #03A9F4;\n}\n.pagination li.active[data-v-17ea8ef3]{\n    color: #fff;\n}\n.pagination li.active a[data-v-17ea8ef3]:hover {\n    background: #0397d6;\n}\n.pagination li.disabled i[data-v-17ea8ef3] {\n    color: #ccc;\n}\n.pagination li i[data-v-17ea8ef3] {\n    font-size: 16px;\n    padding-top: 6px\n}\n.hint-text[data-v-17ea8ef3] {\n    float: left;\n    margin-top: 6px;\n    font-size: 95%;\n}\n.action-links[data-v-17ea8ef3]{\n    cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39864,7 +39940,43 @@ var render = function () {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(article.text))]),
                   _vm._v(" "),
-                  _vm._m(2, true),
+                  _c("td", { staticClass: "action-links" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "edit",
+                        attrs: { title: "Edit", "data-toggle": "tooltip" },
+                        on: {
+                          click: function ($event) {
+                            return _vm.editArticle(article.id)
+                          },
+                        },
+                      },
+                      [
+                        _c("i", { staticClass: "material-icons" }, [
+                          _vm._v(""),
+                        ]),
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "delete",
+                        attrs: { title: "Delete", "data-toggle": "tooltip" },
+                        on: {
+                          click: function ($event) {
+                            return _vm.deleteArticle(article.id)
+                          },
+                        },
+                      },
+                      [
+                        _c("i", { staticClass: "material-icons" }, [
+                          _vm._v(""),
+                        ]),
+                      ]
+                    ),
+                  ]),
                 ])
               }),
               0
@@ -39872,7 +39984,7 @@ var render = function () {
           ]
         ),
         _vm._v(" "),
-        _vm._m(3),
+        _vm._m(2),
       ]),
     ]),
   ])
@@ -39917,39 +40029,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Actions")]),
       ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "a",
-        {
-          staticClass: "view",
-          attrs: { href: "#", title: "View", "data-toggle": "tooltip" },
-        },
-        [_c("i", { staticClass: "material-icons" }, [_vm._v("")])]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "edit",
-          attrs: { href: "#", title: "Edit", "data-toggle": "tooltip" },
-        },
-        [_c("i", { staticClass: "material-icons" }, [_vm._v("")])]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "delete",
-          attrs: { href: "#", title: "Delete", "data-toggle": "tooltip" },
-        },
-        [_c("i", { staticClass: "material-icons" }, [_vm._v("")])]
-      ),
     ])
   },
   function () {

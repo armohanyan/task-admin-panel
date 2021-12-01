@@ -21,4 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('articles', [ArticleController::class, 'index'] )->name('article.index');
 Route::post('create/article', [ArticleController::class, 'create'] )->name('article.create');
+Route::get('destroy/article/{id}', [ArticleController::class, 'destroy'] )->name('article.destroy');
+Route::get('edit/article/{id}', [ArticleController::class, 'edit'] )->name('article.edit');
+Route::post('update/article/{article}', [ArticleController::class, 'update'] )->name('article.update');
+
 

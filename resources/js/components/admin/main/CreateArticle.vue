@@ -27,6 +27,7 @@
                 <span :class="inputErrors.imagesError ? 'invalid-image' : ''" >
                     {{ inputErrors.imagesError ? inputErrors.images : '' }}
                 </span>
+
                 <div class="images-container">
                     <div v-for="(image, index) in showArticleImages" :key="index" class="image-items">
                         <img :src="image" alt="">
@@ -42,21 +43,54 @@
 </template>
 <script>
 
+
 export default {
     data(){
         return {
             showArticleImages : [],
+            deletedImages : [],
             inputErrors : {},
             createdSuccessfully : false,
+            isFormForEdit : false,
             imagesObject : null,
-            array : [],
+            articleImage : [],
             FILE : [],
+            editArtilcle : [],
             inputValues : {
                 title : '',
                 description : '',
                 text : '',
-            }
+            },
+            articleId : '',
         }
+    },
+
+    created () {
+        EventBus.$on('editArticle', (id) => {
+            this.articleId = id;
+            this.isFormForEdit = true
+            this.axios.get(`api/edit/article/${id}`)
+                .then(response => {
+                    let articleImages = response.data.article.images
+
+                    $.each(response.data.article, (key, value) =>  {
+                        this.inputValues[key] !== undefined ? this.inputValues[key] = value : false
+                    } );
+
+                    if (articleImages != null) {
+                        let imageAsObject = JSON.parse(articleImages)
+                        this.showArticleImages = [];
+
+                        $.each(imageAsObject, (key, value) =>  {
+                            this.showArticleImages.push(value)
+                            this.articleImage.push(value)
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+       })
     },
     methods: {
 
@@ -69,13 +103,17 @@ export default {
         },
 
         deleteImage(index){
-            this.showArticleImages.splice(index,1)
+            let deletedImage = this.showArticleImages.splice(index,1)
             this.FILE.splice(index,1)
+            if ( this.articleImage.includes(deletedImage.join() )) {
+                this.deletedImages.push(deletedImage)
+            }
         },
 
         onSubmit() {
             let data = new FormData();
             let formValue = this.inputValues;
+            let url;
 
             this.FILE.forEach((file, index) => {
                 data.append('files[' + index + ']', file);
@@ -85,12 +123,21 @@ export default {
                  data.append(key, value);
             });
 
+            if (this.isFormForEdit){
+                url = `api/update/article/${this.articleId}`
+                console.log(this.deletedImages)
+                this.deletedImages.length > 0 ? data.append('deletedImages', this.deletedImages) : '';
+            }
+            else{
+                url = 'api/create/article'
+            }
+
             const config = {
                 headers: {
                     'content-type': 'multipart/form-data'
                 }
             }
-            this.axios.post('api/create/article', data, config)
+            this.axios.post(url, data, config)
             .then(response => {
                 if ( ! response.data.success ) {
                     this.inputErrors = []
@@ -99,7 +146,6 @@ export default {
                         this.inputErrors[key] = value.join()
                         this.inputErrors[key + 'Error'] = true
                     });
-
                 }
                 else {
                     this.createdSuccessfully = true;
@@ -116,6 +162,7 @@ export default {
             })
             .catch(err => console.log(err))
         }
+
     }
 }
 </script>
