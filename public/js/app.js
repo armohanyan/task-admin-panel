@@ -2250,9 +2250,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   mounted: function mounted() {
     this.getArticles();
   },
+  created: function created() {
+    var _this = this;
+
+    EventBus.$on('onSubmit', function (data) {
+      _this.getArticles();
+    });
+  },
   methods: {
     getArticles: function getArticles() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
@@ -2260,9 +2267,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return _this.axios.get('api/articles').then(function (response) {
-                  _this.articles = response.data.articles;
-                  console.log(_this.articles);
+                return _this2.axios.get('api/articles').then(function (response) {
+                  _this2.articles = response.data.articles;
                 })["catch"](function (error) {
                   console.log(error);
                 });
@@ -2276,7 +2282,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     deleteArticle: function deleteArticle(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
@@ -2284,8 +2290,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return _this2.axios.get("api/destroy/article/".concat(id)).then(function (response) {
-                  _this2.getArticles();
+                return _this3.axios.get("api/destroy/article/".concat(id)).then(function (response) {
+                  _this3.getArticles();
                 })["catch"](function (error) {
                   console.log(error);
                 });
@@ -2385,6 +2391,7 @@ __webpack_require__.r(__webpack_exports__);
 
     EventBus.$on('editArticle', function (id) {
       _this.articleId = id;
+      _this.createdSuccessfully = false;
       _this.isFormForEdit = true;
 
       _this.axios.get("api/edit/article/".concat(id)).then(function (response) {
@@ -2396,6 +2403,7 @@ __webpack_require__.r(__webpack_exports__);
         if (articleImages != null) {
           var imageAsObject = JSON.parse(articleImages);
           _this.showArticleImages = [];
+          _this.FILE = [];
           $.each(imageAsObject, function (key, value) {
             _this.showArticleImages.push(value);
 
@@ -2470,6 +2478,7 @@ __webpack_require__.r(__webpack_exports__);
             description: '',
             text: ''
           };
+          EventBus.$emit('onSubmit', true);
         }
       })["catch"](function (err) {
         return console.log(err);

@@ -68,12 +68,17 @@ export default {
         this.getArticles();
     },
 
+    created() {
+        EventBus.$on('onSubmit', (data) => {
+            this.getArticles();
+        })
+    },
+
     methods : {
        async getArticles(){
             await this.axios.get('api/articles')
             .then(response => {
                 this.articles = response.data.articles
-                console.log(this.articles)
             })
             .catch(error => {
                 console.log(error);

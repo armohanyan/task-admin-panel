@@ -123,6 +123,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+
         $validation = array(
             'title' => 'required|max:50',
             'description' => 'required|max:50',
@@ -137,36 +138,44 @@ class ArticleController extends Controller
                 'errors' => $validator->getMessageBag()->toArray(),
             ], 200);
 
-        } else {
+        }
+        else {
+
             $article->update([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
                 'text' => $request->input('text'),
             ]);
 
+            if ( ! empty($request->file())) {
+                $articleImages = collect((array)json_decode($article->images));
+
+                foreach ($request->file(['files']) as $index => $image){
+                    $name = time(). '.' . $image->getClientOriginalExtension();
+                    $filename = 'storage/article' . $article->id . '/' . $name ;
+                    $image->storeAs("article{$article->id}", $name, 'public');
+                    $articleImages->push($filename);
+                }
+                $article->update(['images' => json_encode( $articleImages, JSON_FORCE_OBJECT)]);
+            }
+
             if ($request->deletedImages) {
+
                 $deletedImages = explode(',',  $request->deletedImages);
                 $articleImages = collect((array)json_decode($article->images));
 
-                $filtered = $articleImages->filter(function ($image) use($deletedImages) {
+                $filtered = $articleImages->filter(function ($image) use($deletedImages, $article) {
+                    $dir = "/storage/article".$article->id;
+                    $scan = scandir(public_path($dir));
+
                     if (!in_array($image, $deletedImages)) return true;
                     if (File::exists($image)) File::delete($image);
-                    return false;
+                    if(  count($scan) == 2 )   rmdir(public_path($dir));
+
+                      return false;
                 });
                 $article->update(['images' => json_encode((object)$filtered)]);
             }
-
-//            if ( ! empty($request->file())) {
-//                $imagesArr = collect([]);
-//
-////                foreach ($request->file(['files']) as $index => $image){
-////                    $name = time(). $index . '.' . $image->getClientOriginalExtension();
-////                    $filename = 'storage/article' . $newArticle->id . '/' . $name ;
-////                    $image->storeAs("article{$newArticle->id}", $name, 'public');
-////                    $imagesArr->push($filename);
-////                }
-////                $newArticle->update(['images' => json_encode( $imagesArr, JSON_FORCE_OBJECT)]);
-//            }
 
             return response()->json([
                 'success' => true,
@@ -183,7 +192,11 @@ class ArticleController extends Controller
         public
         function destroy($id)
         {
+            $article = Article::find($id);
             Article::destroy($id);
+            $dir = "/storage/article".$article->id;
+            File::deleteDirectory(public_path($dir));
+
             return response()->json([
                 'siccess' => true,
             ], 200);

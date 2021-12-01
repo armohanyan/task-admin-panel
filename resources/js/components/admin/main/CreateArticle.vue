@@ -68,6 +68,7 @@ export default {
     created () {
         EventBus.$on('editArticle', (id) => {
             this.articleId = id;
+            this.createdSuccessfully = false;
             this.isFormForEdit = true
             this.axios.get(`api/edit/article/${id}`)
                 .then(response => {
@@ -80,6 +81,7 @@ export default {
                     if (articleImages != null) {
                         let imageAsObject = JSON.parse(articleImages)
                         this.showArticleImages = [];
+                        this.FILE = [];
 
                         $.each(imageAsObject, (key, value) =>  {
                             this.showArticleImages.push(value)
@@ -158,11 +160,11 @@ export default {
                         description : '',
                         text : '',
                     };
+                    EventBus.$emit('onSubmit', true);
                 }
             })
             .catch(err => console.log(err))
         }
-
     }
 }
 </script>
