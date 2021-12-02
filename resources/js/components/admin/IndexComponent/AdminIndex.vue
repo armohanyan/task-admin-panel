@@ -190,7 +190,9 @@ header[role=banner] {
 .users a:before{
   content:$user-icon;
 }
-
+.title-admin-panel {
+    font-size: 30px;
+}
 nav[role=navigation] {
   background: $secondary-color;
   color:$secondary-text;
@@ -375,7 +377,7 @@ td {
     left:0;
     width:100%;
     z-index:99;
-    height:75px;
+    height:55px;
     .utilities{
       position: absolute;
       top: 0;
@@ -394,7 +396,7 @@ td {
   nav[role=navigation] {
     position:fixed;
     width: 200px;
-    top:75px;
+    top:55px;
     bottom:0px;
   }
 

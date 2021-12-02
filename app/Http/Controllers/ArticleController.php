@@ -94,9 +94,12 @@ class ArticleController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show( Article $article)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'article' => $article,
+        ]);
     }
 
     /**
@@ -198,7 +201,18 @@ class ArticleController extends Controller
             File::deleteDirectory(public_path($dir));
 
             return response()->json([
-                'siccess' => true,
+                'success' => true,
+            ], 200);
+        }
+
+        public function searchQuery($query){
+            $searchedReslt = Article::where('title', 'LIKE', "%{$query}%")
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'queryResult' => $searchedReslt,
+
             ], 200);
         }
 }

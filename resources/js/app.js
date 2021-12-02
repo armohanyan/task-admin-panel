@@ -9,13 +9,14 @@ require('./bootstrap');
 window.Vue = require('vue').default;
 
 import axios from 'axios'
-import VueAxios from 'vue-axios'
-Vue.use(VueAxios, axios)
 import Vue from 'vue'
-
 window.EventBus = new Vue();
-import AdminIndex from './components/admin/IndexComponent/AdminIndex';
+Vue.use(VueAxios, axios)
+import VueAxios from 'vue-axios'
+import App from './App';
+import router  from './router/index'
 
 new Vue({
-    render: h => h(AdminIndex),
-}).$mount("#admin-index");
+    router,
+    render: h => h(App),
+}).$mount("#app");

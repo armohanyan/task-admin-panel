@@ -1,5 +1,5 @@
 <template>
-    <section class="panel">
+    <section class="panel" ref="scrollToMe">
         <div class="table-responsive">
             <div class="table-wrapper">
                 <div class="table-title">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <table class="table table-striped table-hover table-bordered">
-                    <thead>
+                    <thead  >
                         <tr>
                             <th>#</th>
                             <th>Title</th>
@@ -30,24 +30,13 @@
                             <td>{{ article.description }}</td>
                             <td>{{ article.text }}</td>
                             <td class="action-links">
-<!--                                <a href="#" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>-->
+                                <a @click="$router.push({ name: 'show-article', params: { id: article.id  } })" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
                                 <a @click="editArticle(article.id)" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
                                 <a @click="deleteArticle(article.id)" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="clearfix">
-                    <ul class="pagination">
-                        <li class="page-item disabled"><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
-                        <li class="page-item"><a href="#" class="page-link">1</a></li>
-                        <li class="page-item"><a href="#" class="page-link">2</a></li>
-                        <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                        <li class="page-item"><a href="#" class="page-link">4</a></li>
-                        <li class="page-item"><a href="#" class="page-link">5</a></li>
-                        <li class="page-item"><a href="#" class="page-link"><i class="fa fa-angle-double-right"></i></a></li>
-                    </ul>
-                </div>
             </div>
         </div>
     </section>
@@ -72,6 +61,11 @@ export default {
         EventBus.$on('onSubmit', (data) => {
             this.getArticles();
         })
+
+        EventBus.$on('scrollToEditArticle', (data) => {
+            const el = this.$refs.scrollToMe;
+            if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
+        });
     },
 
     methods : {
@@ -88,6 +82,7 @@ export default {
        async deleteArticle(id){
             await this.axios.get(`api/destroy/article/${id}`)
             .then(response => {
+                EventBus.$emit('deleteArticle', true);
                 this.getArticles();
             })
             .catch(error => {
@@ -105,11 +100,9 @@ export default {
 <style scoped>
 .panel {
     width: 95%;
+    padding-right: 19px;
 }
 
-.table-responsive {
-    margin: 30px 0;
-}
 .table-wrapper {
     min-width: 1000px;
     background: #fff;

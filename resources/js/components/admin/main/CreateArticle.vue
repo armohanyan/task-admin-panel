@@ -1,5 +1,5 @@
 <template>
-    <section class="panel important">
+    <section class="panel important" id="table-section" ref="scrollToMe">
         <div class="form-container">
             <h2>Create a article</h2>
             <div class="createdSuccessfully-inner">
@@ -51,7 +51,6 @@ export default {
             deletedImages : [],
             inputErrors : {},
             createdSuccessfully : false,
-            isFormForEdit : false,
             imagesObject : null,
             articleImage : [],
             FILE : [],
@@ -66,12 +65,23 @@ export default {
     },
 
     created () {
+        EventBus.$on('scrollToCreateArticle', (data) => {
+            const el = this.$refs.scrollToMe;
+            if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
+        });
+
+        EventBus.$on('deleteArticle', (data) => {
+            this.clearForm()
+        });
+
         EventBus.$on('editArticle', (id) => {
             this.articleId = id;
             this.createdSuccessfully = false;
-            this.isFormForEdit = true
+            const el = this.$refs.scrollToMe;
+            if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
             this.axios.get(`api/edit/article/${id}`)
                 .then(response => {
+
                     let articleImages = response.data.article.images
 
                     $.each(response.data.article, (key, value) =>  {
@@ -94,6 +104,7 @@ export default {
                 })
        })
     },
+
     methods: {
 
         previewFiles(event) {
@@ -150,20 +161,24 @@ export default {
                     });
                 }
                 else {
+                    this.clearForm()
                     this.createdSuccessfully = true;
-                    this.showArticleImages = [];
-                    this.inputErrors = {};
-                    this.imagesObject = null;
-                    this.FILE = [];
-                    this.inputValues = {
-                        title : '',
-                        description : '',
-                        text : '',
-                    };
                     EventBus.$emit('onSubmit', true);
                 }
             })
             .catch(err => console.log(err))
+        },
+
+        clearForm(){
+            this.showArticleImages = [];
+            this.inputErrors = {};
+            this.imagesObject = null;
+            this.FILE = [];
+            this.inputValues = {
+                title : '',
+                description : '',
+                text : '',
+            };
         }
     }
 }

@@ -9,7 +9,7 @@
         <section class="panel">
             <h2>Articlform-containeres</h2>
             <ul>
-                <li><b>2458 </b>Published Posts</li>
+                <li><b>2458</b>Published Posts</li>
             </ul>
         </section>
 <!--  Create - Article  -->
