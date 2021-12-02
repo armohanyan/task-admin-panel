@@ -2512,6 +2512,8 @@ __webpack_require__.r(__webpack_exports__);
       inputErrors: {},
       createdSuccessfully: false,
       imagesObject: null,
+      isCountMore: false,
+      isFormForEdit: false,
       articleImage: [],
       FILE: [],
       editArtilcle: [],
@@ -2542,6 +2544,7 @@ __webpack_require__.r(__webpack_exports__);
     });
     EventBus.$on('editArticle', function (id) {
       _this.articleId = id;
+      _this.isFormForEdit = true;
       _this.createdSuccessfully = false;
       var el = _this.$refs.scrollToMe;
 
@@ -2584,6 +2587,12 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.showArticleImages.push(URL.createObjectURL(file));
       });
+
+      if (this.showArticleImages.length > 20) {
+        alert('yes');
+      }
+
+      console.log(this.showArticleImages.length);
     },
     deleteImage: function deleteImage(index) {
       var deletedImage = this.showArticleImages.splice(index, 1);
@@ -2593,7 +2602,7 @@ __webpack_require__.r(__webpack_exports__);
         this.deletedImages.push(deletedImage);
       }
     },
-    onSubmit: function onSubmit() {
+    SubmitForm: function SubmitForm() {
       var _this3 = this;
 
       var data = new FormData();
@@ -2636,7 +2645,11 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(err);
       });
     },
+    onSubmit: function onSubmit() {
+      this.showArticleImages.length > 20 ? this.isCountMore = true : this.SubmitForm();
+    },
     clearForm: function clearForm() {
+      this.isCountMore = false;
       this.showArticleImages = [];
       this.inputErrors = {};
       this.imagesObject = null;
@@ -2665,12 +2678,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _CreateArticle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateArticle */ "./resources/js/components/admin/main/CreateArticle.vue");
 /* harmony import */ var _ArticleTable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ArticleTable */ "./resources/js/components/admin/main/ArticleTable.vue");
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -7363,7 +7370,7 @@ var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBP
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,400italic);"]);
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "html {\n  box-sizing: border-box;\n}\n*, *:before, *:after {\n  box-sizing: inherit;\n}\nbody {\n  background: #f1f2f7;\n  font-family: \"Open Sans\", arial, sans-serif;\n  color: darkslategray;\n}\nbody.login {\n  background-color: white;\n  max-width: 500px;\n  margin: 10vh auto;\n  padding: 1em;\n  height: auto;\n}\n\n/* general utility classes */\n.warn {\n  color: lightsalmon;\n}\n\n/* header */\nheader[role=banner] {\n  background: white;\n  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);\n}\nheader[role=banner] h1 {\n  margin: 0;\n  font-weight: 300;\n  padding: 1rem;\n}\nheader[role=banner] h1:before {\n  content: \"\\f248\";\n  font-family: FontAwesome;\n  padding-right: 0.6em;\n  color: turquoise;\n}\nheader[role=banner] .utilities {\n  width: 100%;\n  background: slategray;\n  color: #ddd;\n}\nheader[role=banner] .utilities li {\n  border-bottom: solid 1px rgba(255, 255, 255, 0.2);\n}\nheader[role=banner] .utilities li a {\n  padding: 0.7em;\n  display: block;\n}\n\n/* header */\n.utilities a:before {\n  content: \"\\f248\";\n  font-family: FontAwesome;\n  padding-right: 0.6em;\n}\n.logout a:before {\n  content: \"\\f08b\";\n}\n.users a:before {\n  content: \"\\f007\";\n}\n.title-admin-panel {\n  font-size: 30px;\n}\nnav[role=navigation] {\n  background: #2a3542;\n  color: #ddd;\n  /* icons */\n}\nnav[role=navigation] li {\n  border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\nnav[role=navigation] li a {\n  color: #ddd;\n  text-decoration: none;\n  display: block;\n  padding: 0.7em;\n}\nnav[role=navigation] li a:hover {\n  background-color: rgba(255, 255, 255, 0.05);\n}\nnav[role=navigation] li a:before {\n  content: \"\\f248\";\n  font-family: FontAwesome;\n  padding-right: 0.6em;\n}\nnav[role=navigation] .dashboard a:before {\n  content: \"\\f0e4\";\n}\nnav[role=navigation] .write a:before {\n  content: \"\\f055\";\n}\nnav[role=navigation] .edit a:before {\n  content: \"\\f040\";\n}\nnav[role=navigation] .comments a:before {\n  content: \"\\f27b\";\n}\nnav[role=navigation] .users a:before {\n  content: \"\\f007\";\n}\n\n/* current nav item */\n.current, .dashboard .dashboard a, .write .write a, .edit .edit a, .comments .comments a, .users .users a {\n  background-color: rgba(255, 255, 255, 0.1);\n}\nfooter[role=contentinfo] {\n  background: slategray;\n  color: #ddd;\n  font-size: 0.8em;\n  text-align: center;\n  padding: 0.2em;\n}\n\n/* panels */\n.panel {\n  background-color: white;\n  color: darkslategray;\n  border-radius: 0.3rem;\n  margin: 1%;\n}\n.panel > h2, .panel > ul {\n  margin: 1rem;\n}\n\n/* typography */\na {\n  text-decoration: none;\n  color: inherit;\n}\nh2,\nh3,\nh4 {\n  font-weight: 300;\n  margin: 0;\n}\nh2 {\n  color: #1eb6a7;\n}\nb {\n  color: lightsalmon;\n}\n.hint {\n  color: lightslategray;\n}\n\n/* lists */\nul, li {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n}\nmain li {\n  position: relative;\n  padding-left: 1.2em;\n  margin: 0.5em 0;\n}\nmain li:before {\n  content: \"\";\n  position: absolute;\n  width: 0;\n  height: 0;\n  left: 0;\n  top: 0.3em;\n  border-left: solid 10px #dde;\n  border-top: solid 5px transparent;\n  border-bottom: solid 5px transparent;\n}\n\n/* forms */\n#form-inner input, #form-inner textarea, #form-inner select {\n  width: 100%;\n  display: block;\n  border: solid 1px #dde;\n  padding: 0.5em;\n}\n#form-inner input:after, #form-inner textarea:after, #form-inner select:after {\n  content: \"\";\n  display: table;\n  clear: both;\n}\n#form-inner input[type=checkbox], #form-inner input[type=radio] {\n  display: inline;\n  width: auto;\n}\n#form-inner label, #form-inner legend {\n  display: block;\n  margin: 1em 0 0.5em;\n}\n#form-inner .submit-form {\n  background: turquoise;\n  border: none;\n  border-bottom: solid 4px #21ccbb;\n  padding: 0.7em 3em;\n  margin: 1em 0;\n  color: white;\n  text-shadow: 0 -1px 0 #21ccbb;\n  font-size: 1.1em;\n  font-weight: bold;\n  display: inline-block;\n  width: auto;\n  border-radius: 0.5em;\n}\n#form-inner .submit-form:hover {\n  background: khaki;\n  border: none;\n  border-bottom: solid 4px #eadc5f;\n  padding: 0.7em 3em;\n  margin: 1em 0;\n  color: white;\n  text-shadow: 0 -1px 0 #eadc5f;\n  font-size: 1.1em;\n  font-weight: bold;\n  display: inline-block;\n  width: auto;\n  border-radius: 0.5em;\n}\n\n/* feedback */\n.error {\n  background-color: #ffe9e0;\n  border-color: #ffc4ad;\n}\nlabel.error {\n  padding: 0.2em 0.5em;\n}\n.feedback {\n  background: #fcfae6;\n  color: #857a11;\n  margin: 1em;\n  padding: 0.5em 0.5em 0.5em 2em;\n  border: solid 1px khaki;\n}\n.feedback:before {\n  content: \"\\f05a\";\n  font-family: fontawesome;\n  color: #e4d232;\n  margin-left: -1.5em;\n  margin-right: 0.5em;\n}\n.feedback li:before {\n  border-left-color: #f6f0b9;\n}\n.feedback.error {\n  background: #ffe9e0;\n  color: #942a00;\n  margin: 1em;\n  padding: 0.5em 0.5em 0.5em 2em;\n  border: solid 1px lightsalmon;\n}\n.feedback.error:before {\n  content: \"\\f06a\";\n  font-family: fontawesome;\n  color: #ff5714;\n  margin-left: -1.5em;\n  margin-right: 0.5em;\n}\n.feedback.error li:before {\n  border-left-color: #ffc4ad;\n}\n.feedback.success {\n  background: #98eee6;\n  color: #08322e;\n  margin: 1em;\n  padding: 0.5em 0.5em 0.5em 2em;\n  border: solid 1px turquoise;\n}\n.feedback.success:before {\n  content: \"\\f164\";\n  font-family: fontawesome;\n  color: #1aa093;\n  margin-left: -1.5em;\n  margin-right: 0.5em;\n}\n.feedback.success li:before {\n  border-left-color: #6ce7db;\n}\n\n/* tables */\ntable {\n  border-collapse: collapse;\n  width: 96%;\n  margin: 2%;\n}\nth {\n  text-align: left;\n  font-weight: 400;\n  font-size: 13px;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  padding: 0 10px;\n  padding-bottom: 14px;\n}\ntr:not(:first-child):hover {\n  background: rgba(0, 0, 0, 0.1);\n}\ntd {\n  line-height: 40px;\n  font-weight: 300;\n  padding: 0 10px;\n}\n@media screen and (min-width: 600px) {\nhtml, body {\n    height: 100%;\n}\nheader[role=banner] {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    z-index: 99;\n    height: 55px;\n}\nheader[role=banner] .utilities {\n    position: absolute;\n    top: 0;\n    right: 0;\n    background: transparent;\n    color: darkslategray;\n    width: auto;\n}\nheader[role=banner] .utilities li {\n    display: inline-block;\n}\nheader[role=banner] .utilities li a {\n    padding: 0.5em 1em;\n}\nnav[role=navigation] {\n    position: fixed;\n    width: 200px;\n    top: 55px;\n    bottom: 0px;\n}\nmain[role=main] {\n    margin: 75px 0 40px 200px;\n}\nmain[role=main]:after {\n    content: \"\";\n    display: table;\n    clear: both;\n}\n.panel {\n    margin: 2% 0 0 2%;\n    float: left;\n    width: 96%;\n}\n.panel:after {\n    content: \"\";\n    display: table;\n    clear: both;\n}\n.box, .twothirds, .onethird {\n    padding: 1rem;\n}\n.onethird {\n    width: 33.333%;\n    float: left;\n}\n.twothirds {\n    width: 66%;\n    float: left;\n}\nfooter[role=contentinfo] {\n    clear: both;\n    margin-left: 200px;\n}\n}\n@media screen and (min-width: 900px) {\nfooter[role=contentinfo] {\n    position: fixed;\n    width: 100%;\n    bottom: 0;\n    left: 0px;\n    margin: 0;\n}\n.panel {\n    width: 47%;\n    clear: none;\n}\n.panel.important {\n    width: 96%;\n}\n.panel.secondary {\n    width: 23%;\n}\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "html {\n  box-sizing: border-box;\n}\n*, *:before, *:after {\n  box-sizing: inherit;\n}\nbody {\n  background: #f1f2f7;\n  font-family: \"Open Sans\", arial, sans-serif;\n  color: darkslategray;\n}\nbody.login {\n  background-color: white;\n  max-width: 500px;\n  margin: 10vh auto;\n  padding: 1em;\n  height: auto;\n}\n\n/* general utility classes */\n.warn {\n  color: lightsalmon;\n}\n\n/* header */\nheader[role=banner] {\n  background: white;\n  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);\n}\nheader[role=banner] h1 {\n  margin: 0;\n  font-weight: 300;\n  padding: 1rem;\n}\nheader[role=banner] h1:before {\n  content: \"\\f248\";\n  font-family: FontAwesome;\n  padding-right: 0.6em;\n  color: turquoise;\n}\nheader[role=banner] .utilities {\n  width: 100%;\n  background: slategray;\n  color: #ddd;\n}\nheader[role=banner] .utilities li {\n  border-bottom: solid 1px rgba(255, 255, 255, 0.2);\n}\nheader[role=banner] .utilities li a {\n  padding: 0.7em;\n  display: block;\n}\n\n/* header */\n.utilities a:before {\n  content: \"\\f248\";\n  font-family: FontAwesome;\n  padding-right: 0.6em;\n}\n.logout a:before {\n  content: \"\\f08b\";\n}\n.users a:before {\n  content: \"\\f007\";\n}\n.title-admin-panel {\n  font-size: 30px;\n}\nnav[role=navigation] {\n  background: #2a3542;\n  color: #ddd;\n  /* icons */\n}\nnav[role=navigation] li {\n  border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\nnav[role=navigation] li a {\n  color: #ddd;\n  text-decoration: none;\n  display: block;\n  padding: 0.7em;\n}\nnav[role=navigation] li a:hover {\n  background-color: rgba(255, 255, 255, 0.05);\n}\nnav[role=navigation] .dashboard a:before {\n  content: \"\\f0e4\";\n}\nnav[role=navigation] .write a:before {\n  content: \"\\f055\";\n}\nnav[role=navigation] .edit a:before {\n  content: \"\\f040\";\n}\nnav[role=navigation] .comments a:before {\n  content: \"\\f27b\";\n}\nnav[role=navigation] .users a:before {\n  content: \"\\f007\";\n}\n\n/* current nav item */\n.current, .dashboard .dashboard a, .write .write a, .edit .edit a, .comments .comments a, .users .users a {\n  background-color: rgba(255, 255, 255, 0.1);\n}\nfooter[role=contentinfo] {\n  background: slategray;\n  color: #ddd;\n  font-size: 0.8em;\n  text-align: center;\n  padding: 0.2em;\n}\n\n/* panels */\n.panel {\n  background-color: white;\n  color: darkslategray;\n  border-radius: 0.3rem;\n  margin: 1%;\n}\n.panel > h2, .panel > ul {\n  margin: 1rem;\n}\n\n/* typography */\na {\n  text-decoration: none;\n  color: inherit;\n}\nh2,\nh3,\nh4 {\n  font-weight: 300;\n  margin: 0;\n}\nh2 {\n  color: #1eb6a7;\n}\nb {\n  color: lightsalmon;\n}\n.hint {\n  color: lightslategray;\n}\n\n/* lists */\nul, li {\n  list-style-type: none;\n  margin: 0;\n  padding: 0;\n}\nmain li {\n  position: relative;\n  padding-left: 1.2em;\n  margin: 0.5em 0;\n}\nmain li:before {\n  content: \"\";\n  position: absolute;\n  width: 0;\n  height: 0;\n  left: 0;\n  top: 0.3em;\n  border-left: solid 10px #dde;\n  border-top: solid 5px transparent;\n  border-bottom: solid 5px transparent;\n}\n\n/* forms */\n#form-inner input, #form-inner textarea, #form-inner select {\n  width: 100%;\n  display: block;\n  border: solid 1px #dde;\n  padding: 0.5em;\n}\n#form-inner input:after, #form-inner textarea:after, #form-inner select:after {\n  content: \"\";\n  display: table;\n  clear: both;\n}\n#form-inner input[type=checkbox], #form-inner input[type=radio] {\n  display: inline;\n  width: auto;\n}\n#form-inner label, #form-inner legend {\n  display: block;\n  margin: 1em 0 0.5em;\n}\n#form-inner .submit-form {\n  background: turquoise;\n  border: none;\n  border-bottom: solid 4px #21ccbb;\n  padding: 0.7em 3em;\n  margin: 1em 0;\n  color: white;\n  text-shadow: 0 -1px 0 #21ccbb;\n  font-size: 1.1em;\n  font-weight: bold;\n  display: inline-block;\n  width: auto;\n  border-radius: 0.5em;\n}\n#form-inner .submit-form:hover {\n  background: khaki;\n  border: none;\n  border-bottom: solid 4px #eadc5f;\n  padding: 0.7em 3em;\n  margin: 1em 0;\n  color: white;\n  text-shadow: 0 -1px 0 #eadc5f;\n  font-size: 1.1em;\n  font-weight: bold;\n  display: inline-block;\n  width: auto;\n  border-radius: 0.5em;\n}\n\n/* feedback */\n.error {\n  background-color: #ffe9e0;\n  border-color: #ffc4ad;\n}\nlabel.error {\n  padding: 0.2em 0.5em;\n}\n.feedback {\n  background: #fcfae6;\n  color: #857a11;\n  margin: 1em;\n  padding: 0.5em 0.5em 0.5em 2em;\n  border: solid 1px khaki;\n}\n.feedback:before {\n  content: \"\\f05a\";\n  font-family: fontawesome;\n  color: #e4d232;\n  margin-left: -1.5em;\n  margin-right: 0.5em;\n}\n.feedback li:before {\n  border-left-color: #f6f0b9;\n}\n.feedback.error {\n  background: #ffe9e0;\n  color: #942a00;\n  margin: 1em;\n  padding: 0.5em 0.5em 0.5em 2em;\n  border: solid 1px lightsalmon;\n}\n.feedback.error:before {\n  content: \"\\f06a\";\n  font-family: fontawesome;\n  color: #ff5714;\n  margin-left: -1.5em;\n  margin-right: 0.5em;\n}\n.feedback.error li:before {\n  border-left-color: #ffc4ad;\n}\n.feedback.success {\n  background: #98eee6;\n  color: #08322e;\n  margin: 1em;\n  padding: 0.5em 0.5em 0.5em 2em;\n  border: solid 1px turquoise;\n}\n.feedback.success:before {\n  content: \"\\f164\";\n  font-family: fontawesome;\n  color: #1aa093;\n  margin-left: -1.5em;\n  margin-right: 0.5em;\n}\n.feedback.success li:before {\n  border-left-color: #6ce7db;\n}\n\n/* tables */\ntable {\n  border-collapse: collapse;\n  width: 96%;\n  margin: 2%;\n}\nth {\n  text-align: left;\n  font-weight: 400;\n  font-size: 13px;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  padding: 0 10px;\n  padding-bottom: 14px;\n}\ntr:not(:first-child):hover {\n  background: rgba(0, 0, 0, 0.1);\n}\ntd {\n  line-height: 40px;\n  font-weight: 300;\n  padding: 0 10px;\n}\n@media screen and (min-width: 600px) {\nhtml, body {\n    height: 100%;\n}\nheader[role=banner] {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    z-index: 99;\n    height: 55px;\n}\nheader[role=banner] .utilities {\n    position: absolute;\n    top: 0;\n    right: 0;\n    background: transparent;\n    color: darkslategray;\n    width: auto;\n}\nheader[role=banner] .utilities li {\n    display: inline-block;\n}\nheader[role=banner] .utilities li a {\n    padding: 0.5em 1em;\n}\nnav[role=navigation] {\n    position: fixed;\n    width: 200px;\n    top: 55px;\n    bottom: 0px;\n}\nmain[role=main] {\n    margin: 75px 0 40px 200px;\n}\nmain[role=main]:after {\n    content: \"\";\n    display: table;\n    clear: both;\n}\n.panel {\n    margin: 2% 0 0 2%;\n    float: left;\n    width: 96%;\n}\n.panel:after {\n    content: \"\";\n    display: table;\n    clear: both;\n}\n.box, .twothirds, .onethird {\n    padding: 1rem;\n}\n.onethird {\n    width: 33.333%;\n    float: left;\n}\n.twothirds {\n    width: 66%;\n    float: left;\n}\nfooter[role=contentinfo] {\n    clear: both;\n    margin-left: 200px;\n}\n}\n@media screen and (min-width: 900px) {\nfooter[role=contentinfo] {\n    position: fixed;\n    width: 100%;\n    bottom: 0;\n    left: 0px;\n    margin: 0;\n}\n.panel {\n    width: 47%;\n    clear: none;\n}\n.panel.important {\n    width: 96%;\n}\n.panel.secondary {\n    width: 23%;\n}\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -7459,7 +7466,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-df8f9b22]{\n    display: flex;\n    flex-wrap:wrap;\n}\n.form-container[data-v-df8f9b22]{\n    width: 70%;\n    padding: 10px;\n}\n.images-container[data-v-df8f9b22]{\n    margin-top: 3px;\n    display: flex;\n    flex-wrap:wrap;\n    width: 100%;\n}\n.images-container > div[data-v-df8f9b22]{\n    width: 25%;\n    position: relative;\n}\n.images-container > div > img[data-v-df8f9b22]{\n    -o-object-fit: cover;\n       object-fit: cover;\n    width:100%;\n}\n.delete-image[data-v-df8f9b22]{\n    position: absolute;\n    top: 2px;\n    right: 5px;\n    font-size: 18px;\n    font-width: 700;\n    color: #fff;\n}\n.delete-image > img[data-v-df8f9b22] {\n    width: 30px;\n    height: 30px;\n}\n.invalid-feedback[data-v-df8f9b22]::-moz-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]:-ms-input-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::placeholder {\n    color: red;\n}\n.invalid-image[data-v-df8f9b22] {\n    color: red;\n    font-size: 13px;\n}\n.createdSuccessfully-inner[data-v-df8f9b22]{\n    width: 100%;\n    text-align: center;\n}\n.createdSuccessfully[data-v-df8f9b22]{\n    color: green;\n    font-size:20px;\n    font-weight: 700;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-df8f9b22]{\n    display: flex;\n    flex-wrap:wrap;\n}\n.form-container[data-v-df8f9b22]{\n    width: 70%;\n    padding: 10px;\n}\n.images-container[data-v-df8f9b22]{\n    margin-top: 3px;\n    display: flex;\n    flex-wrap:wrap;\n    width: 100%;\n}\n.images-container > div[data-v-df8f9b22]{\n    width: 25%;\n    position: relative;\n}\n.images-container > div > img[data-v-df8f9b22]{\n    -o-object-fit: cover;\n       object-fit: cover;\n    width:100%;\n}\n.delete-image[data-v-df8f9b22]{\n    position: absolute;\n    top: 2px;\n    right: 5px;\n    font-size: 18px;\n    font-width: 700;\n    color: #fff;\n}\n.delete-image > img[data-v-df8f9b22] {\n    width: 30px;\n    height: 30px;\n}\n.isCountMore[data-v-df8f9b22]{\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::-moz-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]:-ms-input-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::placeholder {\n    color: red;\n}\n.invalid-image[data-v-df8f9b22] {\n    color: red;\n    font-size: 13px;\n}\n.createdSuccessfully-inner[data-v-df8f9b22]{\n    width: 100%;\n    text-align: center;\n}\n.createdSuccessfully[data-v-df8f9b22]{\n    color: green;\n    font-size:20px;\n    font-weight: 700;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -7507,7 +7514,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.main li a[data-v-347a9624] {\n    cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.main li a[data-v-347a9624] {\n    cursor: pointer;\n}\ni[data-v-347a9624] {\n    padding: 5px !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -41218,6 +41225,12 @@ var render = function () {
               0
             ),
             _vm._v(" "),
+            _vm.isCountMore
+              ? _c("span", { staticClass: "isCountMore" }, [
+                  _vm._v("Images count must be 20. "),
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _vm._m(0),
           ]
         ),
@@ -41263,8 +41276,6 @@ var render = function () {
     [
       _vm._m(0),
       _vm._v(" "),
-      _vm._m(1),
-      _vm._v(" "),
       _c("create-article"),
       _vm._v(" "),
       _c("article-table"),
@@ -41286,18 +41297,6 @@ var staticRenderFns = [
             "Important panel that will always be really wide Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
           ),
         ]),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("section", { staticClass: "panel" }, [
-      _c("h2", [_vm._v("Articlform-containeres")]),
-      _vm._v(" "),
-      _c("ul", [
-        _c("li", [_c("b", [_vm._v("2458")]), _vm._v("Published Posts")]),
       ]),
     ])
   },
@@ -41457,7 +41456,7 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("nav", { attrs: { role: "navigation" } }, [
     _c("ul", { staticClass: "main" }, [
-      _c("li", { staticClass: "dashboard" }, [
+      _c("li", {}, [
         _c(
           "a",
           {
@@ -41467,25 +41466,39 @@ var render = function () {
               },
             },
           },
-          [_vm._v("Dashboard")]
+          [
+            _c("i", {
+              staticClass: "fa fa-tachometer",
+              attrs: { "aria-hidden": "true" },
+            }),
+            _vm._v("Dashboard"),
+          ]
         ),
       ]),
       _vm._v(" "),
       _vm.isRouteSearch
-        ? _c("div", [
-            _c("li", {}, [
+        ? _c("div", { staticClass: "side-navbar" }, [
+            _c("li", [
               _c("a", { on: { click: _vm.scrollToCreateArticle } }, [
-                _vm._v("Create Article"),
+                _c("i", {
+                  staticClass: "fa fa-plus",
+                  attrs: { "aria-hidden": "true" },
+                }),
+                _vm._v(" Create Article"),
               ]),
             ]),
             _vm._v(" "),
-            _c("li", {}, [
+            _c("li", [
               _c("a", { on: { click: _vm.scrollToEditArticle } }, [
+                _c("i", {
+                  staticClass: "fa fa-pencil",
+                  attrs: { "aria-hidden": "true" },
+                }),
                 _vm._v("Edit Article"),
               ]),
             ]),
             _vm._v(" "),
-            _c("li", {}, [
+            _c("li", [
               _c(
                 "a",
                 {
@@ -41495,7 +41508,13 @@ var render = function () {
                     },
                   },
                 },
-                [_vm._v("Search Article")]
+                [
+                  _c("i", {
+                    staticClass: "fa fa-search",
+                    attrs: { "aria-hidden": "true" },
+                  }),
+                  _vm._v("Search Article"),
+                ]
               ),
             ]),
           ])

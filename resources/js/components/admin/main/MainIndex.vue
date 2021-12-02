@@ -6,12 +6,6 @@
                 <li>Important panel that will always be really wide Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
             </ul>
         </section>
-        <section class="panel">
-            <h2>Articlform-containeres</h2>
-            <ul>
-                <li><b>2458</b>Published Posts</li>
-            </ul>
-        </section>
 <!--  Create - Article  -->
     <create-article/>
 <!----------------------->

@@ -206,9 +206,7 @@ nav[role=navigation] {
       &:hover{
         background-color:rgba(white,.05);
       }
-      &:before{
-        @include left-icon;
-      }
+
     }
   }
   /* icons */

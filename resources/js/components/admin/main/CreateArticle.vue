@@ -27,13 +27,13 @@
                 <span :class="inputErrors.imagesError ? 'invalid-image' : ''" >
                     {{ inputErrors.imagesError ? inputErrors.images : '' }}
                 </span>
-
                 <div class="images-container">
                     <div v-for="(image, index) in showArticleImages" :key="index" class="image-items">
                         <img :src="image" alt="">
                         <span @click="deleteImage(index)" class="delete-image"><img src="https://img.icons8.com/flat-round/64/000000/delete-sign.png"/></span>
                     </div>
                 </div>
+                <span v-if="isCountMore" class="isCountMore">Images count must be 20. </span>
                 <div class="button">
                     <button  class="submit-form">Submit</button>
                 </div>
@@ -52,6 +52,8 @@ export default {
             inputErrors : {},
             createdSuccessfully : false,
             imagesObject : null,
+            isCountMore : false,
+            isFormForEdit : false,
             articleImage : [],
             FILE : [],
             editArtilcle : [],
@@ -76,12 +78,12 @@ export default {
 
         EventBus.$on('editArticle', (id) => {
             this.articleId = id;
+            this.isFormForEdit = true
             this.createdSuccessfully = false;
             const el = this.$refs.scrollToMe;
             if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
             this.axios.get(`api/edit/article/${id}`)
                 .then(response => {
-
                     let articleImages = response.data.article.images
 
                     $.each(response.data.article, (key, value) =>  {
@@ -113,6 +115,10 @@ export default {
                 this.FILE.push(file);
                 this.showArticleImages.push(URL.createObjectURL(file));
             });
+            if (this.showArticleImages.length > 20) {
+                alert('yes')
+            }
+            console.log(this.showArticleImages.length);
         },
 
         deleteImage(index){
@@ -123,7 +129,7 @@ export default {
             }
         },
 
-        onSubmit() {
+        SubmitForm() {
             let data = new FormData();
             let formValue = this.inputValues;
             let url;
@@ -168,8 +174,11 @@ export default {
             })
             .catch(err => console.log(err))
         },
-
+        onSubmit(){
+            this.showArticleImages.length > 20 ? this.isCountMore = true : this.SubmitForm() ;
+        },
         clearForm(){
+            this.isCountMore = false
             this.showArticleImages = [];
             this.inputErrors = {};
             this.imagesObject = null;
@@ -223,6 +232,10 @@ export default {
 .delete-image > img {
     width: 30px;
     height: 30px;
+}
+
+.isCountMore{
+    color: red;
 }
 
 .invalid-feedback::placeholder {
