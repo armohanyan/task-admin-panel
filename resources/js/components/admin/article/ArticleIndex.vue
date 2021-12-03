@@ -17,8 +17,8 @@
                         </div>
                         <div class="row photos">
                             <div class="col-sm-6 col-md-4 col-lg-3 item mt-4" v-for="(image, index) in articleImages" :key="index" >
-                                <a :href="image" data-lightbox="photos">
-                                    <img class="img-fluid" :src="image">
+                                <a :href="'/' + image" data-lightbox="photos">
+                                    <img class="img-fluid" :src="'/' + image">
                                 </a>
                             </div>
                          </div>
@@ -39,7 +39,7 @@ import SideIndex from "../side/SideIndex";
 import FooterIndex from "../footer/FooterIndex";
 export default {
     name: "Index",
-    components: {FooterIndex, SideIndex, HeaderIndex},
+    components: { FooterIndex, SideIndex, HeaderIndex },
 
     data() {
         return {
@@ -54,10 +54,11 @@ export default {
 
     methods : {
         async showArticle(){
-            await this.axios.get('api/show/article/' + this.$route.params.id)
+            await this.axios.get('/api/show/article/' + this.$route.params.id)
                 .then( response => {
                     this.article = response.data.article
                     let articleImages = response.data.article.images
+
                     if (articleImages != null) {
                         let imageAsObject = JSON.parse(articleImages)
                         this.articleImages = imageAsObject

@@ -2227,7 +2227,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return _this.axios.get('api/show/article/' + _this.$route.params.id).then(function (response) {
+                return _this.axios.get('/api/show/article/' + _this.$route.params.id).then(function (response) {
                   _this.article = response.data.article;
                   var articleImages = response.data.article.images;
 
@@ -2837,7 +2837,7 @@ __webpack_require__.r(__webpack_exports__);
   name: "SideIndex",
   data: function data() {
     return {
-      isRouteSearch: true
+      isRouteHome: false
     };
   },
   methods: {
@@ -2848,9 +2848,9 @@ __webpack_require__.r(__webpack_exports__);
       EventBus.$emit('scrollToEditArticle', true);
     }
   },
-  created: function created() {
-    if (this.$route.name == 'search') {
-      this.isRouteSearch = false;
+  mounted: function mounted() {
+    if (this.$route.name == 'home') {
+      this.isRouteHome = true;
     }
   }
 });
@@ -2962,7 +2962,12 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
-  // mode: 'history',
+  mode: 'history',
+  scrollBehavior: function scrollBehavior() {
+    return {
+      y: 0
+    };
+  },
   routes: [{
     path: '/',
     name: 'home',
@@ -40749,11 +40754,16 @@ var render = function () {
                       [
                         _c(
                           "a",
-                          { attrs: { href: image, "data-lightbox": "photos" } },
+                          {
+                            attrs: {
+                              href: "/" + image,
+                              "data-lightbox": "photos",
+                            },
+                          },
                           [
                             _c("img", {
                               staticClass: "img-fluid",
-                              attrs: { src: image },
+                              attrs: { src: "/" + image },
                             }),
                           ]
                         ),
@@ -40830,7 +40840,7 @@ var render = function () {
         staticClass: "title-admin-panel",
         on: {
           click: function ($event) {
-            return _vm.$router.push("/")
+            _vm.$router.push("/").catch(function () {})
           },
         },
       },
@@ -41457,7 +41467,7 @@ var render = function () {
           {
             on: {
               click: function ($event) {
-                return _vm.$router.push("/")
+                _vm.$router.push("/").catch(function () {})
               },
             },
           },
@@ -41471,7 +41481,7 @@ var render = function () {
         ),
       ]),
       _vm._v(" "),
-      _vm.isRouteSearch
+      _vm.isRouteHome
         ? _c("div", { staticClass: "side-navbar" }, [
             _c("li", [
               _c("a", { on: { click: _vm.scrollToCreateArticle } }, [
