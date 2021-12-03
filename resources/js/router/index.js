@@ -6,6 +6,7 @@ import AdminIndex from '../components/admin/IndexComponent/AdminIndex';
 import ArticleIndex from '../components/admin/article/ArticleIndex';
 
 export default new VueRouter({
+    mode: 'history',
     routes : [
         {
             path: '/',
