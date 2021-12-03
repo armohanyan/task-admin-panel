@@ -115,10 +115,6 @@ export default {
                 this.FILE.push(file);
                 this.showArticleImages.push(URL.createObjectURL(file));
             });
-            if (this.showArticleImages.length > 20) {
-                alert('yes')
-            }
-            console.log(this.showArticleImages.length);
         },
 
         deleteImage(index){

@@ -2587,12 +2587,6 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.showArticleImages.push(URL.createObjectURL(file));
       });
-
-      if (this.showArticleImages.length > 20) {
-        alert('yes');
-      }
-
-      console.log(this.showArticleImages.length);
     },
     deleteImage: function deleteImage(index) {
       var deletedImage = this.showArticleImages.splice(index, 1);
