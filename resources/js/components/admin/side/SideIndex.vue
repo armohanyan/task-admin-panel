@@ -1,11 +1,11 @@
 <template>
     <nav role="navigation">
         <ul class="main">
-            <li class=""><a @click="$router.push('/').catch(()=>{})"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</a></li>
-            <div v-if="isRouteHome" class="side-navbar">
-                <li><a @click="scrollToCreateArticle"><i class="fa fa-plus" aria-hidden="true"></i> Create Article</a></li>
-                <li><a @click="scrollToEditArticle"><i class="fa fa-pencil" aria-hidden="true"></i>Edit Article</a></li>
-                <li><a @click="$router.push('/search')"><i class="fa fa-search" aria-hidden="true"></i>Search Article</a></li>
+            <li class=""><a @click="$router.push('/dashboard').catch(()=>{})"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</a></li>
+            <div class="side-navbar">
+                <li><a @click="$router.push('/create/article').catch(()=>{})"><i class="fa fa-plus" aria-hidden="true"></i> Create Article</a></li>
+                <li><a @click="$router.push('/articles').catch(()=>{})"><i class="fa fa-pencil" aria-hidden="true"></i>Articles</a></li>
+                <!-- <li><a @click="$router.push('/search')"><i class="fa fa-search" aria-hidden="true"></i>Search Article</a></li> -->
             </div>
         </ul>
     </nav>
@@ -14,27 +14,6 @@
 <script>
 export default {
     name: "SideIndex",
-
-    data(){
-       return {
-           isRouteHome : false,
-       }
-    },
-
-    methods: {
-        scrollToCreateArticle() {
-            EventBus.$emit('scrollToCreateArticle', true);
-        },
-
-        scrollToEditArticle() {
-            EventBus.$emit('scrollToEditArticle', true);
-        }
-    },
-    mounted(){
-        if ( this.$route.name == 'home' ) {
-            this.isRouteHome = true;
-        }
-    },
 }
 
 </script>

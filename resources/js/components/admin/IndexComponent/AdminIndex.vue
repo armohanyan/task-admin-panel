@@ -32,13 +32,6 @@ export default({
         MainIndex,
         FooterIndex,
     },
-
-    data(){
-        return {
-
-        }
-    },
-
 })
 
 </script>

@@ -6,9 +6,9 @@
                 <li>Important panel that will always be really wide Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
             </ul>
         </section>
-<!--  Create - Article  -->
+ <!-- Create - Article  -->
     <create-article/>
-<!----------------------->
+<!--------------------- -->
 <!--  Article - Table  -->
     <article-table/>
 <!----------------------->
@@ -22,7 +22,9 @@ import CreateArticle from "./CreateArticle";
 import ArticleTable from "./ArticleTable";
 export default {
     name: "MainIndex",
-    components: {ArticleTable, CreateArticle}
+    components: {
+        ArticleTable, CreateArticle
+    }
 }
 </script>
 

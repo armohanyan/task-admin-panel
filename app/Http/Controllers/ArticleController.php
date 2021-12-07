@@ -20,7 +20,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::orderBy('id', 'DESC')->limit(5)->get();
+        $articles = Article::orderBy('id', 'DESC')->get();  
         return response()->json([
             'success' => true,
             'articles' => $articles

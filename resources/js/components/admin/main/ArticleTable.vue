@@ -62,10 +62,6 @@ export default {
             this.getArticles();
         })
 
-        EventBus.$on('scrollToEditArticle', (data) => {
-            const el = this.$refs.scrollToMe;
-            if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
-        });
     },
 
     methods : {

@@ -67,22 +67,17 @@ export default {
     },
 
     created () {
-        EventBus.$on('scrollToCreateArticle', (data) => {
-            const el = this.$refs.scrollToMe;
-            if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
-        });
 
         EventBus.$on('deleteArticle', (data) => {
             this.clearForm()
         });
-
-        EventBus.$on('editArticle', (id) => {
-            this.articleId = id;
+        if(this.$route.name == 'edit-article') {
+            this.articleId = this.$route.params.id;
             this.isFormForEdit = true
             this.createdSuccessfully = false;
             const el = this.$refs.scrollToMe;
             if (el) { el.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});}
-            this.axios.get(`api/edit/article/${id}`)
+            this.axios.get(`/api/edit/article/${this.articleId}`)
                 .then(response => {
                     let articleImages = response.data.article.images
 
@@ -96,7 +91,7 @@ export default {
                         this.FILE = [];
 
                         $.each(imageAsObject, (key, value) =>  {
-                            this.showArticleImages.push(value)
+                            this.showArticleImages.push('/' + value)
                             this.articleImage.push(value)
                         });
                     }
@@ -104,7 +99,7 @@ export default {
                 .catch(error => {
                     console.log(error);
                 })
-       })
+       }
     },
 
     methods: {
@@ -139,12 +134,12 @@ export default {
             });
 
             if (this.isFormForEdit){
-                url = `api/update/article/${this.articleId}`
+                url = `/api/update/article/${this.articleId}`
                 console.log(this.deletedImages)
                 this.deletedImages.length > 0 ? data.append('deletedImages', this.deletedImages) : '';
             }
             else{
-                url = 'api/create/article'
+                url = '/api/create/article'
             }
 
             const config = {

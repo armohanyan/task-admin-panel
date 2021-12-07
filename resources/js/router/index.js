@@ -4,6 +4,8 @@ Vue.use(VueRouter);
 import SearchIndex from '../components/admin/search/SearchIndex';
 import AdminIndex from '../components/admin/IndexComponent/AdminIndex';
 import ArticleIndex from '../components/admin/article/ArticleIndex';
+import CreateArticle from '../components/admin/article/CreateArticle';
+import ArticlesList from '../components/admin/article/ArticlesList';
 
 export default new VueRouter({
     mode: 'history',
@@ -14,17 +16,32 @@ export default new VueRouter({
         {
             path: '/',
             name :'home',
-            component : AdminIndex ,
+            component : SearchIndex ,
         },
         {
-            path: '/search',
-            name :'search',
-            component : SearchIndex,
+            path: '/dashboard',
+            name :'dashboard',
+            component : AdminIndex,
         },
         {
             path: '/show/article/:id',
             name :'show-article',
             component : ArticleIndex ,
+        },
+        {
+            path: '/create/article',
+            name :'create-article',
+            component : CreateArticle,
+        },
+        {
+            path: '/edit/article/:id',
+            name :'edit-article',
+            component : CreateArticle,
+        },
+        {
+            path: '/articles',
+            name :'articles',
+            component : ArticlesList,
         },
     ]
 })
