@@ -7718,7 +7718,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-df8f9b22]{\n    display: flex;\n    flex-wrap:wrap;\n}\n.form-container[data-v-df8f9b22]{\n    width: 70%;\n    padding: 10px;\n}\n.images-container[data-v-df8f9b22]{\n    margin-top: 3px;\n    display: flex;\n    flex-wrap:wrap;\n    width: 100%;\n}\n.images-container > div[data-v-df8f9b22]{\n    width: 25%;\n    position: relative;\n}\n.images-container > div > img[data-v-df8f9b22]{\n    -o-object-fit: cover;\n       object-fit: cover;\n    width:100%;\n}\n.delete-image[data-v-df8f9b22]{\n    position: absolute;\n    top: 2px;\n    right: 5px;\n    font-size: 18px;\n    font-width: 700;\n    color: #fff;\n}\n.delete-image > img[data-v-df8f9b22] {\n    width: 30px;\n    height: 30px;\n}\n.isCountMore[data-v-df8f9b22]{\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::-moz-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]:-ms-input-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::placeholder {\n    color: red;\n}\n.invalid-image[data-v-df8f9b22] {\n    color: red;\n    font-size: 13px;\n}\n.createdSuccessfully-inner[data-v-df8f9b22]{\n    width: 100%;\n    text-align: center;\n}\n.createdSuccessfully[data-v-df8f9b22]{\n    color: green;\n    font-size:20px;\n    font-weight: 700;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.panel[data-v-df8f9b22]{\n    display: flex;\n    flex-wrap:wrap;\n}\n.form-container[data-v-df8f9b22]{\n    width: 70%;\n    padding: 10px;\n}\n.images-container[data-v-df8f9b22]{\n    margin-top: 3px;\n    display: flex;\n    flex-wrap:wrap;\n    width: 100%;\n}\n.images-container > div[data-v-df8f9b22]{\n    width: 25%;\n    position: relative;\n}\n.images-container > div > img[data-v-df8f9b22]{\n    -o-object-fit: cover;\n       object-fit: cover;\n    width:100%;\n}\n.delete-image[data-v-df8f9b22]{\n    position: absolute;\n    top: 2px;\n    right: 5px;\n    font-size: 18px;\n    /* font-width: 700; */\n    color: #fff;\n}\n.delete-image > img[data-v-df8f9b22] {\n    width: 30px;\n    height: 30px;\n}\n.isCountMore[data-v-df8f9b22]{\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::-moz-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]:-ms-input-placeholder {\n    color: red;\n}\n.invalid-feedback[data-v-df8f9b22]::placeholder {\n    color: red;\n}\n.invalid-image[data-v-df8f9b22] {\n    color: red;\n    font-size: 13px;\n}\n.createdSuccessfully-inner[data-v-df8f9b22]{\n    width: 100%;\n    text-align: center;\n}\n.createdSuccessfully[data-v-df8f9b22]{\n    color: green;\n    font-size:20px;\n    font-weight: 700;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -41538,7 +41538,7 @@ var render = function () {
             _c(
               "tbody",
               _vm._l(_vm.articles, function (article, index) {
-                return _c("tr", [
+                return _c("tr", { key: index }, [
                   _c("td", [_vm._v(_vm._s(article.id))]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(article.title))]),
@@ -41565,24 +41565,6 @@ var render = function () {
                       [
                         _c("i", { staticClass: "material-icons" }, [
                           _vm._v(""),
-                        ]),
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "edit",
-                        attrs: { title: "Edit", "data-toggle": "tooltip" },
-                        on: {
-                          click: function ($event) {
-                            return _vm.editArticle(article.id)
-                          },
-                        },
-                      },
-                      [
-                        _c("i", { staticClass: "material-icons" }, [
-                          _vm._v(""),
                         ]),
                       ]
                     ),
@@ -41793,7 +41775,6 @@ var render = function () {
                 cols: "40",
                 rows: "8",
                 name: "text",
-                placeholder: "Type text",
                 id: "text",
                 placeholder: _vm.inputErrors.textError
                   ? _vm.inputErrors.text

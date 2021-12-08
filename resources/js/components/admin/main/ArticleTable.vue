@@ -24,14 +24,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(article, index) in articles">
+                        <tr v-for="(article, index) in articles" :key="index">
                             <td>{{ article.id }}</td>
                             <td>{{ article.title }}</td>
                             <td>{{ article.description }}</td>
                             <td>{{ article.text }}</td>
                             <td class="action-links">
                                 <a @click="$router.push({ name: 'show-article', params: { id: article.id  } })" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
-                                <a @click="editArticle(article.id)" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                <!-- <a @click="editArticle(article.id)" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a> -->
                                 <a @click="deleteArticle(article.id)" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                             </td>
                         </tr>

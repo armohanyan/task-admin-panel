@@ -17,7 +17,7 @@
                             :placeholder="inputErrors.descriptionError ? inputErrors.description : 'Type article description'" />
 
                 <label for='text'>Article Text:</label>
-                <textarea v-model="inputValues.text" cols="40" rows="8" name="text" placeholder="Type text" id="text"
+                <textarea v-model="inputValues.text" cols="40" rows="8" name="text" id="text"
                       :class="inputErrors.textError ? 'invalid-feedback' : ''"
                       :placeholder="inputErrors.textError ? inputErrors.text : 'Type article text'">
                 </textarea>
@@ -216,7 +216,7 @@ export default {
     top: 2px;
     right: 5px;
     font-size: 18px;
-    font-width: 700;
+    /* font-width: 700; */
     color: #fff;
 }
 
