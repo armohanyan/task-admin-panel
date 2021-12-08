@@ -7846,7 +7846,7 @@
                 "php": ">=7.3"
             },
             "require-dev": {
-                https: //adminpanel-application.herokuapp.com/show/article/8               "phpunit/phpunit": "^9.0"
+                "https: //adminpanel-application.herokuapp.com/show/article/8phpunit/phpunit": "^9.0"
             },
             "type": "library",
             "extra": {
