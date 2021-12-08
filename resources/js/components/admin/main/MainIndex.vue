@@ -10,7 +10,7 @@
     <create-article/>
 <!--------------------- -->
 <!--  Article - Table  -->
-    <article-table/>
+    <!-- <article-table/> -->
 <!----------------------->
 
     </main>

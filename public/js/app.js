@@ -41918,13 +41918,7 @@ var render = function () {
   return _c(
     "main",
     { attrs: { role: "main" } },
-    [
-      _vm._m(0),
-      _vm._v(" "),
-      _c("create-article"),
-      _vm._v(" "),
-      _c("article-table"),
-    ],
+    [_vm._m(0), _vm._v(" "), _c("create-article")],
     1
   )
 }
